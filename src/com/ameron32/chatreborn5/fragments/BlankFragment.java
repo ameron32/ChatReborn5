@@ -2,6 +2,7 @@ package com.ameron32.chatreborn5.fragments;
 
 import com.ameron32.chatreborn5.R;
 import com.ameron32.chatreborn5.R.layout;
+import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
 import com.ameron32.chatreborn5.notifications.NewMessageNotification;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer.FragmentReference;
@@ -132,11 +133,5 @@ public class BlankFragment extends Fragment {
     super.onDetach();
     mListener = null;
   }
-  
-
-  public interface OnFragmentInteractionListener {
-    
-    public void onFragmentInteraction(String thingThatHappened);
-  }
-  
+ 
 }

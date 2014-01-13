@@ -1,6 +1,7 @@
 package com.ameron32.chatreborn5;
 
 import com.ameron32.chatreborn5.fragments.BlankFragment;
+import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer;
 
 import android.annotation.SuppressLint;
@@ -29,7 +30,7 @@ import android.view.MenuItem;
  * {@link ScreenListFragment.Callbacks} interface to listen for item selections.
  */
 public class MainActivity extends FragmentActivity 
-  implements ScreenListFragment.Callbacks, BlankFragment.OnFragmentInteractionListener {
+  implements ScreenListFragment.Callbacks, OnFragmentInteractionListener {
   
   private SlidingPaneLayout mSlidingLayout;
   private ActionBar         mActionBar;
@@ -66,11 +67,9 @@ public class MainActivity extends FragmentActivity
     // adding or replacing the detail fragment using a
     // fragment transaction.
     
-//    ((ScreenDetailFragment) getSupportFragmentManager().findFragmentById(R.id.content_pane)).setText(FragmentOrganizer.ITEM_MAP.get(id).title);
-    getSupportFragmentManager().beginTransaction()
-      .replace(R.id.content_pane, FragmentOrganizer.ITEM_MAP.get(id).fragment)
-      .addToBackStack(null)
-      .commit();
+    // ((ScreenDetailFragment)
+    // getSupportFragmentManager().findFragmentById(R.id.content_pane)).setText(FragmentOrganizer.ITEM_MAP.get(id).title);
+    getSupportFragmentManager().beginTransaction().replace(R.id.content_pane, FragmentOrganizer.ITEM_MAP.get(id).fragment).addToBackStack(null).commit();
     
     mSlidingLayout.closePane();
     
@@ -121,7 +120,7 @@ public class MainActivity extends FragmentActivity
     mActionBar.setDisplayHomeAsUpEnabled(true);
     mActionBar.setHomeButtonEnabled(true);
     
-//    getSupportFragmentManager().findFragmentById(R.id.content_pane).setHasOptionsMenu(true);
+    // getSupportFragmentManager().findFragmentById(R.id.content_pane).setHasOptionsMenu(true);
     getSupportFragmentManager().findFragmentById(R.id.screen_list).setHasOptionsMenu(false);
     
   }
@@ -131,11 +130,11 @@ public class MainActivity extends FragmentActivity
     mActionBar.setDisplayHomeAsUpEnabled(false);
     
     if (mSlidingLayout.isSlideable()) {
-//      getSupportFragmentManager().findFragmentById(R.id.content_pane).setHasOptionsMenu(false);
+      // getSupportFragmentManager().findFragmentById(R.id.content_pane).setHasOptionsMenu(false);
       getSupportFragmentManager().findFragmentById(R.id.screen_list).setHasOptionsMenu(true);
     }
     else {
-//      getSupportFragmentManager().findFragmentById(R.id.content_pane).setHasOptionsMenu(true);
+      // getSupportFragmentManager().findFragmentById(R.id.content_pane).setHasOptionsMenu(true);
       getSupportFragmentManager().findFragmentById(R.id.screen_list).setHasOptionsMenu(false);
     }
   }
@@ -166,7 +165,7 @@ public class MainActivity extends FragmentActivity
       }
     }
   }
-
+  
   @Override
   public void onFragmentInteraction(String thingThatHappened) {
     // TODO Auto-generated method stub
