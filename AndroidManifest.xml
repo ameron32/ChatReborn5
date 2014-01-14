@@ -22,8 +22,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.ameron32.chatreborn5.services.ChatServer"
+            android:icon="@drawable/ic_launcher"
+            android:label="ChatServer Service" >
+        </service>
+        <service
+            android:name="com.ameron32.chatreborn5.services.ChatClient"
+            android:icon="@drawable/ic_launcher"
+            android:label="ChatClient Service" >
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
 </manifest>

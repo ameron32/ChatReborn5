@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <ImageButton
+        android:id="@+id/bAddComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@null"
+        android:src="@drawable/ic_action_cancel" />
+
+    <RelativeLayout
+        android:id="@+id/rlCommentCount"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignBottom="@+id/bAddComment"
+        android:layout_alignRight="@+id/bAddComment"
+        android:visibility="invisible" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_action_cancel" />
+
+        <TextView
+            android:id="@+id/tvCommentCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="0"
+            android:textColor="#FFFFFF" />
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/bAddTags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@+id/bAddComment"
+        android:background="@null"
+        android:src="@drawable/ic_action_cancel" />
+
+    <RelativeLayout
+        android:id="@+id/rlTagCount"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignBottom="@+id/bAddTags"
+        android:layout_alignRight="@+id/bAddTags"
+        android:visibility="invisible" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_action_cancel" />
+
+        <TextView
+            android:id="@+id/tvTagCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="0"
+            android:textColor="#FFFFFF" />
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/bEditMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@+id/bAddTags"
+        android:background="@null"
+        android:src="@drawable/ic_action_cancel" />
+
+    <RelativeLayout
+        android:id="@+id/rlEditCount"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignBottom="@+id/bEditMessage"
+        android:layout_alignRight="@+id/bEditMessage"
+        android:visibility="invisible" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_action_cancel" />
+
+        <TextView
+            android:id="@+id/tvEditCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="0"
+            android:textColor="#FFFFFF" />
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/bHideMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@+id/bEditMessage"
+        android:background="@null"
+        android:src="@drawable/ic_action_cancel" />
+
+    <ImageButton
+        android:id="@+id/bDeleteMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@+id/bHideMessage"
+        android:background="@null"
+        android:src="@drawable/ic_action_cancel" />
+
+</RelativeLayout>

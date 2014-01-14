@@ -28,44 +28,6 @@ public class ChatServer extends ChatService {
 
 	private Server server;
 
-	private void init() {
-	  register();
-	  
-		setServer(new Server() {
-			protected Connection newConnection() {
-				return new ChatConnection();
-			}
-		});
-		
-		Network.register(server);
-
-		getServer().addListener(serverListener);
-		
-		changeState(ChatConnectionState.PREPARED);
-		
-		// restore chat log somehow 
-		
-    new SimpleAsyncTask() {
-      
-      @Override
-      protected void doInBackground() {
-        try {
-          Log.error("SERVER STARTING");
-          server.bind(Network.port);
-          server.start();
-          changeState(ChatConnectionState.ONLINE);
-        }
-        catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-      
-      @Override
-      protected void onPostExecute() {
-        // all UIs should be notified that now connected
-      }
-    }.execute();
-	}
 	
 	private final ChatListener serverListener = new ChatListener() {
 		@Override
@@ -213,16 +175,54 @@ public class ChatServer extends ChatService {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		com.esotericsoftware.minlog.Log
 				.set(com.esotericsoftware.minlog.Log.LEVEL_DEBUG);
-		if (intent != null) startServer();
+//		if (intent != null) startServer();
 		return super.onStartCommand(intent, flags, startId);
 	}
 
-	private void startServer() {
-		if (getState() == ChatConnectionState.OFFLINE) {
-		  changeState(ChatConnectionState.PREPARING);
-			init();
-		}
-	}
+  public void startServer() {
+    if (getState() == ChatConnectionState.OFFLINE) {
+      changeState(ChatConnectionState.PREPARING);
+      
+      register();
+      
+      setServer(new Server() {
+        
+        protected Connection newConnection() {
+          return new ChatConnection();
+        }
+      });
+      
+      Network.register(server);
+      
+      getServer().addListener(serverListener);
+      
+      changeState(ChatConnectionState.PREPARED);
+      
+      // restore chat log somehow
+      
+      new SimpleAsyncTask() {
+        
+        @Override
+        protected void doInBackground() {
+          try {
+            Log.error("SERVER STARTING");
+            server.bind(Network.port);
+            server.start();
+            changeState(ChatConnectionState.ONLINE);
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+        
+        @Override
+        protected void onPostExecute() {
+          // all UIs should be notified that now connected
+        }
+      }.execute();
+    }
+  }
+  
 	
 	@Override
 	public void onDestroy() {
@@ -230,47 +230,45 @@ public class ChatServer extends ChatService {
 		super.onDestroy();
 	}
 
-	private void stopServerIn(int millis) {
-		if (getState() == ChatConnectionState.ONLINE) {
-			term(millis);
-		}
-	}
-	
-	private void term(int millis) {
-		AsyncTask<Integer, Integer, String> stopServer = new AsyncTask<Integer, Integer, String>() {
-			@Override
-			protected String doInBackground(Integer... params) {
-				int totalTimeInMillis = params[0];
-				int updates = 10;
-				int timePerUpdate = totalTimeInMillis / updates;
-				for (int u = 0; u < updates; u++) {
-					sendChatMessage("Server shutting down in "
-							+ ((totalTimeInMillis - (timePerUpdate * u)) / 1000)
-							+ " seconds!");
-					try {
-						Thread.sleep(timePerUpdate);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-
-				// store server log somehow
-
-				getServer().stop();
-				getServer().close();
-				
-				changeState(ChatConnectionState.OFFLINE);
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(String result) {
-				clearNotification(getSTOP_NOTIFICATION_ID());
-				super.onPostExecute(result);
-			}
-		};
-		stopServer.execute(millis);
-	}
+  public void stopServerIn(int millis) {
+    if (getState() == ChatConnectionState.ONLINE) {
+      
+      AsyncTask<Integer, Integer, String> stopServer = new AsyncTask<Integer, Integer, String>() {
+        
+        @Override
+        protected String doInBackground(Integer... params) {
+          int totalTimeInMillis = params[0];
+          int updates = 10;
+          int timePerUpdate = totalTimeInMillis / updates;
+          for (int u = 0; u < updates; u++) {
+            sendChatMessage("Server shutting down in " + ((totalTimeInMillis - (timePerUpdate * u)) / 1000)
+                + " seconds!");
+            try {
+              Thread.sleep(timePerUpdate);
+            }
+            catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+          }
+          
+          // store server log somehow
+          
+          getServer().stop();
+          getServer().close();
+          
+          changeState(ChatConnectionState.OFFLINE);
+          return null;
+        }
+        
+        @Override
+        protected void onPostExecute(String result) {
+          clearNotification(getSTOP_NOTIFICATION_ID());
+          super.onPostExecute(result);
+        }
+      };
+      stopServer.execute(millis);
+    }
+  }
 
 	// --------------------------------------
 	// BINDER

@@ -2,6 +2,8 @@ package com.ameron32.chatreborn5;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +16,11 @@ import android.view.ViewTreeObserver;
 
 import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer;
+import com.ameron32.chatreborn5.organization.ServicesOrganizer;
+import com.ameron32.chatreborn5.services.ChatClient;
+import com.ameron32.chatreborn5.services.ChatServer;
+import com.ameron32.chatreborn5.services.ChatService;
+import com.ameron32.chatreborn5.views.SendBar;
 
 /**
  * An activity representing the represents a a list of Screens and its details
@@ -51,8 +58,26 @@ public class MainActivity extends FragmentActivity
     mSlidingLayout.getViewTreeObserver().addOnGlobalLayoutListener(new FirstLayoutListener());
     
     // TODO: If exposing deep links into your app, handle intents here.
+       
+    iServer = new Intent(this, ChatServer.class);
+    bindService(iServer, ServicesOrganizer.mServerConnection, ContextWrapper.BIND_AUTO_CREATE);
+    startService(iServer);
+    iClient = new Intent(this, ChatClient.class);
+    bindService(iClient, ServicesOrganizer.mClientConnection, ContextWrapper.BIND_AUTO_CREATE);
+    startService(iClient);
+    
+    SendBar sendBar = ((SendBar) findViewById(R.id.vSendBar));
+    ChatService.addWatcher(sendBar);
   }
   
+  Intent iServer, iClient;
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    unbindService(ServicesOrganizer.mServerConnection);
+    unbindService(ServicesOrganizer.mClientConnection);
+  }
+
   /**
    * Callback method from {@link ScreenListFragment.Callbacks} indicating that
    * the item with the given ID was selected.
@@ -168,4 +193,25 @@ public class MainActivity extends FragmentActivity
     // TODO Auto-generated method stub
     
   }
+  
+  
+  
+  
+//  private MyServiceConnection mConnection = new MyServiceConnection();
+//  private ChatServer chatServer;
+//  public class MyServiceConnection implements ServiceConnection {
+//    
+//    @Override
+//    public void onServiceConnected(ComponentName name, IBinder service) {
+//      MyBinder mBinder = (MyBinder) service;
+//      chatServer = (ChatServer) mBinder.getService();
+//    }
+//    
+//    @Override
+//    public void onServiceDisconnected(ComponentName name) {
+//      
+//    }
+//  }
+  
+  
 }

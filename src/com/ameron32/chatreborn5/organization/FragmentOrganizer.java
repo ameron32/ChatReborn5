@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ameron32.chatreborn5.fragments.CoreFragment;
-
 import android.support.v4.app.Fragment;
+
+import com.ameron32.chatreborn5.fragments.ClientFragment;
+import com.ameron32.chatreborn5.fragments.CoreFragment;
+import com.ameron32.chatreborn5.fragments.NetworkMonitorFragment;
 
 public class FragmentOrganizer {
   
@@ -16,8 +18,8 @@ public class FragmentOrganizer {
   public static Map<String, FragmentReference> ITEM_MAP = new HashMap<String, FragmentReference>();
   
   static {
-    addItem(new FragmentReference("1", "Network Status", CoreFragment.newInstance(1)));
-    addItem(new FragmentReference("2", "Chat", CoreFragment.newInstance(2)));
+    addItem(new FragmentReference("1", "Network Status", NetworkMonitorFragment.newInstance(1)));
+    addItem(new FragmentReference("2", "Chat", ClientFragment.newInstance(2)));
     addItem(new FragmentReference("3", "Settings", CoreFragment.newInstance(3)));
     addItem(new FragmentReference("4", "Player", CoreFragment.newInstance(4)));
     addItem(new FragmentReference("5", "Character", CoreFragment.newInstance(5)));

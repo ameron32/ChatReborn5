@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/flFancyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
+        <ImageView
+            android:id="@+id/redButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/redbutton" />
+
+        <ImageButton
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:src="@drawable/ic_action_send_now" />
+
+        <ImageButton
+            android:id="@+id/mic_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:src="@drawable/ic_action_microphone" />
+    </RelativeLayout>
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ivCharacter"
+        android:layout_alignTop="@+id/ivCharacter"
+        android:layout_toLeftOf="@+id/flFancyButton"
+        android:layout_toRightOf="@+id/ivCharacter"
+        android:ems="10"
+        android:gravity="bottom"
+        android:hint="Message"
+        android:imeOptions="actionSend"
+        android:maxHeight="200dp"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/tvDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/message"
+        android:layout_alignRight="@+id/clear_text"
+        android:layout_alignTop="@+id/ivCharacter"
+        android:gravity="right"
+        android:text="debug" />
+
+    <ImageView
+        android:id="@+id/ivCharacter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/gen_avatar" />
+
+    <ImageButton
+        android:id="@+id/clear_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/flFancyButton"
+        android:background="@null"
+        android:src="@drawable/ic_action_cancel" />
+
+</RelativeLayout>

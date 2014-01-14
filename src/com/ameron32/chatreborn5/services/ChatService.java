@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.ameron32.chatreborn5.MainActivity;
 import com.ameron32.chatreborn5.interfaces.ChatConnectionWatcher;
@@ -30,22 +31,26 @@ public abstract class ChatService extends Service {
 	
 	@Override
 	public IBinder onBind(Intent intent) {
+	  Log.d("ChatService", "onBind");
 		return getMyBinder();
 	}
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
+	  Log.d("ChatService", "onUnbind");
 		return super.onUnbind(intent);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+	  Log.d("ChatService", "onStartCommand");
 		startNotification(getSTART_NOTIFICATION_ID());
 		return START_STICKY;
 	}
 
 	@Override
 	public void onDestroy() {
+	  Log.d("ChatService", "onDestroy");
 		watchers.clear();
 		stopNotification(getSTOP_NOTIFICATION_ID());
 		super.onDestroy();
@@ -222,25 +227,28 @@ public abstract class ChatService extends Service {
   // REFERENCES
   // --------------------------------------
 	
-	private ChatConnectionState serviceState = ChatConnectionState.OFFLINE;
-	public enum ChatConnectionState {
-	  OFFLINE, PREPARING, PREPARED, CONNECTING, ONLINE, DISCONNECTING, DISABLING
-	}
-	public void changeState(ChatConnectionState nextState) {
-	  ChatConnectionState prevState = serviceState;
-	  serviceState = nextState;
-	  for (ChatConnectionWatcher w : watchers) {
-	    w.onChatConnectionStateChanged(this, prevState, nextState);
-	  }
-	}
-	public ChatConnectionState getState() {
-	  return serviceState;
-	}
-	
-	private static final List<ChatConnectionWatcher> watchers = new ArrayList<ChatConnectionWatcher>();
-	public void addWatcher(ChatConnectionWatcher watcher) {
-	  watchers.add(watcher);
-	}
+  private ChatConnectionState serviceState = ChatConnectionState.OFFLINE;
+  public enum ChatConnectionState {
+    OFFLINE, PREPARING, PREPARED, CONNECTING, ONLINE, DISCONNECTING, DISABLING
+  }
+  
+  public void changeState(ChatConnectionState nextState) {
+    ChatConnectionState prevState = serviceState;
+    serviceState = nextState;
+    for (ChatConnectionWatcher w : watchers) {
+      w.onChatConnectionStateChanged(this, prevState, nextState);
+    }
+  }
+  
+  public ChatConnectionState getState() {
+    return serviceState;
+  }
+  
+  private static final List<ChatConnectionWatcher> watchers = new ArrayList<ChatConnectionWatcher>();
+  
+  public static void addWatcher(ChatConnectionWatcher watcher) {
+    if (!(watchers.contains(watcher))) watchers.add(watcher);
+  }
 	
 	
 	// --------------------------------------

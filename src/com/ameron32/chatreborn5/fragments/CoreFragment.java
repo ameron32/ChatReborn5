@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +28,15 @@ import com.ameron32.chatreborn5.organization.FragmentOrganizer.FragmentReference
  * 
  */
 public class CoreFragment extends Fragment {
-  public static final boolean DEBUG = true;
   
+  public static final boolean                       DEBUG      = true;
   
   // TODO: Rename parameter arguments, choose names that match
   // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-  private static final String           id = "fragmentId";
+  protected static final String                     id         = "fragmentId";
   
   // TODO: Rename and change types of parameters
-  private int                           fragmentId;
+  protected int                                     fragmentId;
   
   private final List<OnFragmentInteractionListener> mListeners = new ArrayList<OnFragmentInteractionListener>();
   
@@ -55,17 +57,20 @@ public class CoreFragment extends Fragment {
     return fragment;
   }
   
-  private FragmentReference parentReference;
+  protected FragmentReference parentReference;
+  
   public void setReference(FragmentReference parentReference) {
     this.parentReference = parentReference;
   }
   
   public CoreFragment() {
+    Log.d("CoreFragment", "constructor");
     // Required empty public constructor
   }
   
   @Override
   public void onCreate(Bundle savedInstanceState) {
+    Log.d("CoreFragment", "onCreate");
     super.onCreate(savedInstanceState);
     if (getArguments() != null) {
       fragmentId = getArguments().getInt(id);
@@ -74,9 +79,11 @@ public class CoreFragment extends Fragment {
     }
   }
   
-  private View mRootView;
+  protected View mRootView;
+  
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    Log.d("CoreFragment", "onCreateView");
     // Inflate the layout for this fragment
     mRootView = inflater.inflate(R.layout.fragment_blank, container, false);
     
@@ -86,7 +93,7 @@ public class CoreFragment extends Fragment {
       if (mRootView.findViewById(R.id.new_text_view) == null) { throw new NullPointerException("View = mRootView.findViewById is null"); }
       if (parentReference == null) { throw new NullPointerException("parentReference is null"); }
       if (parentReference.title == null) { throw new NullPointerException("parentReference.title is null"); }
-    }    
+    }
     
     ((TextView) mRootView.findViewById(R.id.new_text_view)).setText(parentReference.title);
     
@@ -96,12 +103,14 @@ public class CoreFragment extends Fragment {
   // TODO: Rename method, update argument and hook method into UI event
   public void onThingHappened(String thingThatHappened) {
     if (mListeners != null && mListeners.size() > 0) {
-      for (OnFragmentInteractionListener l : mListeners) l.onFragmentInteraction(thingThatHappened);
+      for (OnFragmentInteractionListener l : mListeners)
+        l.onFragmentInteraction(thingThatHappened);
     }
   }
   
   @Override
   public void onAttach(Activity activity) {
+    Log.d("CoreFragment", "onAttach");
     super.onAttach(activity);
     try {
       mListeners.add((OnFragmentInteractionListener) activity);
@@ -115,8 +124,57 @@ public class CoreFragment extends Fragment {
   
   @Override
   public void onDetach() {
+    Log.d("CoreFragment", "onDetach");
     super.onDetach();
     mListeners.clear();
   }
- 
+  
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    Log.d("CoreFragment", "onConfigurationChanged");
+    super.onConfigurationChanged(newConfig);
+  }
+  
+  @Override
+  public void onDestroy() {
+    Log.d("CoreFragment", "onDestroy");
+    super.onDestroy();
+  }
+  
+  @Override
+  public void onDestroyView() {
+    Log.d("CoreFragment", "onDestroyView");
+    super.onDestroyView();
+  }
+  
+  @Override
+  public void onPause() {
+    Log.d("CoreFragment", "onPause");
+    super.onPause();
+  }
+  
+  @Override
+  public void onResume() {
+    Log.d("CoreFragment", "onResume");
+    super.onResume();
+  }
+  
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    Log.d("CoreFragment", "onSaveInstanceState");
+    super.onSaveInstanceState(outState);
+  }
+  
+  @Override
+  public void onStart() {
+    Log.d("CoreFragment", "onStart");
+    super.onStart();
+  }
+  
+  @Override
+  public void onStop() {
+    Log.d("CoreFragment", "onStop");
+    super.onStop();
+  }
+  
 }
