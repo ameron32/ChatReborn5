@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ameron32.chatreborn5.fragments.BlankFragment;
+import com.ameron32.chatreborn5.fragments.CoreFragment;
 
 import android.support.v4.app.Fragment;
 
@@ -16,14 +16,14 @@ public class FragmentOrganizer {
   public static Map<String, FragmentReference> ITEM_MAP = new HashMap<String, FragmentReference>();
   
   static {
-    addItem(new FragmentReference("1", "Network Status", BlankFragment.newInstance(null, null, 1)));
-    addItem(new FragmentReference("2", "Chat Management", BlankFragment.newInstance(null, null, 2)));
-    addItem(new FragmentReference("3", "App Settings", BlankFragment.newInstance(null, null, 3)));
-    addItem(new FragmentReference("4", "Player Info", BlankFragment.newInstance(null, null, 4)));
-    addItem(new FragmentReference("5", "Character", BlankFragment.newInstance(null, null, 5)));
-    addItem(new FragmentReference("6", "World", BlankFragment.newInstance(null, null, 6)));
-    addItem(new FragmentReference("7", "Library", BlankFragment.newInstance(null, null, 7)));
-    addItem(new FragmentReference("8", "Battle", BlankFragment.newInstance(null, null, 8)));
+    addItem(new FragmentReference("1", "Network Status", CoreFragment.newInstance(1)));
+    addItem(new FragmentReference("2", "Chat", CoreFragment.newInstance(2)));
+    addItem(new FragmentReference("3", "Settings", CoreFragment.newInstance(3)));
+    addItem(new FragmentReference("4", "Player", CoreFragment.newInstance(4)));
+    addItem(new FragmentReference("5", "Character", CoreFragment.newInstance(5)));
+    addItem(new FragmentReference("6", "World", CoreFragment.newInstance(6)));
+    addItem(new FragmentReference("7", "Library", CoreFragment.newInstance(7)));
+    addItem(new FragmentReference("8", "Battle", CoreFragment.newInstance(8)));
   }
   
   private static void addItem(FragmentReference item) {
@@ -44,7 +44,7 @@ public class FragmentOrganizer {
     public String   title;
     public Fragment fragment;
     
-    public FragmentReference(String id, String title, BlankFragment fragment) {
+    public FragmentReference(String id, String title, CoreFragment fragment) {
       this.id = id;
       this.title = title;
       fragment.setReference(this);

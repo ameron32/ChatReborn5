@@ -1,22 +1,19 @@
 package com.ameron32.chatreborn5;
 
-import com.ameron32.chatreborn5.fragments.BlankFragment;
-import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
-import com.ameron32.chatreborn5.organization.FragmentOrganizer;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Toast;
-import android.view.MenuItem;
+
+import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
+import com.ameron32.chatreborn5.organization.FragmentOrganizer;
 
 /**
  * An activity representing the represents a a list of Screens and its details
@@ -69,7 +66,7 @@ public class MainActivity extends FragmentActivity
     
     // ((ScreenDetailFragment)
     // getSupportFragmentManager().findFragmentById(R.id.content_pane)).setText(FragmentOrganizer.ITEM_MAP.get(id).title);
-    getSupportFragmentManager().beginTransaction().replace(R.id.content_pane, FragmentOrganizer.ITEM_MAP.get(id).fragment).addToBackStack(null).commit();
+    getSupportFragmentManager().beginTransaction().replace(R.id.content_pane, FragmentOrganizer.ITEM_MAP.get(id).fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
     
     mSlidingLayout.closePane();
     

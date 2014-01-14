@@ -31,7 +31,57 @@ public class NewMessageNotification {
   /**
    * The unique identifier for this type of notification.
    */
-  private static final String NOTIFICATION_TAG = "NewMessage";
+  private static String NOTIFICATION_TAG = null;
+  
+  
+  
+  public static void notify(final Context context, final Intent intent, 
+      final String title, final String text,
+      final int number, final String tag) {
+    NOTIFICATION_TAG = tag;
+    final Resources res = context.getResources();
+    final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+    
+    // Set appropriate defaults for the notification light, sound,
+    // and vibration.
+    .setDefaults(Notification.DEFAULT_ALL)
+    
+    // Set required fields, including the small icon, the
+    // notification title, and text.
+    .setSmallIcon(R.drawable.ic_stat_new_message).setContentTitle(title).setContentText(text)
+    
+    // All fields below this line are optional.
+    
+    // Use a default priority (recognized on devices running Android
+    // 4.1 or later)
+    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+    
+    // Show a number. This is useful when stacking notifications of
+    // a single type.
+    .setNumber(number)
+    
+    // Set the pending intent to be initiated when the user touches
+    // the notification.
+    .setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
+    
+    // Show an expanded list of items on devices running Android 4.1
+    // or later.
+    // .setStyle(new
+    // NotificationCompat.InboxStyle().addLine(exampleItem).addLine(exampleItem).addLine(exampleItem).addLine(exampleItem).setBigContentTitle(title).setSummaryText("Dummy summary text"))
+    
+    // Example additional actions for this notification. These will
+    // only show on devices running Android 4.1 or later, so you
+    // should ensure that the activity in this notification's
+    // content intent provides access to the same actions in
+    // another way.
+    .addAction(R.drawable.ic_action_stat_share, res.getString(R.string.action_share), PendingIntent.getActivity(context, 0, Intent.createChooser(new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, "Dummy text"), "Dummy title"), PendingIntent.FLAG_UPDATE_CURRENT)).addAction(R.drawable.ic_action_stat_reply, res.getString(R.string.action_reply), null)
+    
+    // Automatically dismiss the notification when it is touched.
+    .setAutoCancel(true);
+    
+    notify(context, builder.build());
+  }
+  
   
   /**
    * Shows the notification, or updates a previously shown notification of this
@@ -136,13 +186,13 @@ public class NewMessageNotification {
    * {@link #notify(Context, String, int)}.
    */
   @TargetApi(Build.VERSION_CODES.ECLAIR)
-  public static void cancel(final Context context) {
+  public static void cancel(final Context context, final String tag) {
     final NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-      nm.cancel(NOTIFICATION_TAG, 0);
+      nm.cancel(tag, 0);
     }
     else {
-      nm.cancel(NOTIFICATION_TAG.hashCode());
+      nm.cancel(tag.hashCode());
     }
   }
 }
