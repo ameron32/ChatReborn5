@@ -7,6 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ameron32.chatreborn5.R;
+import com.ameron32.chatreborn5.chat.ChatAdapter;
+import com.ameron32.chatreborn5.chat.ChatListener;
+import com.ameron32.chatreborn5.chat.Global;
+import com.ameron32.chatreborn5.organization.ServicesOrganizer;
+import com.fortysevendeg.swipelistview.SwipeListView;
 
 public class ClientFragment extends CoreFragment {
   
@@ -32,7 +37,34 @@ public class ClientFragment extends CoreFragment {
     return mRootView;
   }
   
-  private void initViews() {}
+  SwipeListView slvChatHistory;
+  ChatAdapter chatAdapter;
+  private void initViews() {
+    slvChatHistory = (SwipeListView) mRootView.findViewById(R.id.slvChatHistory);
+  }
   
+  @Override
+  public void onResume() {
+    super.onResume();
+    init();
+  }
+
+  private void init() {
+    chatAdapter = new ChatAdapter(getActivity(), Global.Local.clientChatHistory.getFilteredHistory());
+    slvChatHistory.setAdapter(chatAdapter);
+    ServicesOrganizer.chatClient.addChatClientListener(listener);
+  }
+  
+  private ChatListener listener = new ChatListener() {
+
+    @Override
+    protected void onReceivedComplete(boolean wasChatObjectReceived) {
+      super.onReceivedComplete(wasChatObjectReceived);
+      if (wasChatObjectReceived) mRootView.post(new Runnable() { public void run() {
+        chatAdapter.notifyDataSetChanged();
+      }});
+    }
+    
+  };
 
 }

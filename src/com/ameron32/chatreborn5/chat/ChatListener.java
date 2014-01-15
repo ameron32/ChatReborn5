@@ -2,13 +2,21 @@ package com.ameron32.chatreborn5.chat;
 
 import android.util.Log;
 
-import com.ameron32.chatreborn5.chat.MessageTemplates.*;
+import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
+import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
+import com.ameron32.chatreborn5.chat.MessageTemplates.RegisterName;
+import com.ameron32.chatreborn5.chat.MessageTemplates.ServerChatHistory;
+import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
+import com.ameron32.chatreborn5.chat.MessageTemplates.UpdateNames;
+import com.ameron32.chatreborn5.interfaces.ChatConnectionWatcher;
 import com.ameron32.chatreborn5.services.ChatServer.ChatConnection;
+import com.ameron32.chatreborn5.services.ChatService;
+import com.ameron32.chatreborn5.services.ChatService.ChatConnectionState;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 
-public abstract class ChatListener extends Listener {
+public abstract class ChatListener extends Listener implements ChatConnectionWatcher {
 
 	private Connection connection;
 	private Object object;
@@ -18,6 +26,10 @@ public abstract class ChatListener extends Listener {
 	public Object getObject() { return object; }
 	public void setObject(Object object) { this.object = object; }
 
+	public ChatListener() {
+	  ChatService.addWatcher(this);
+	}
+	
 	private void init(final Connection connection) {
 		this.setConnection(connection);
 	}
@@ -169,5 +181,20 @@ public abstract class ChatListener extends Listener {
 	protected void onReceivedComplete(final boolean wasChatObjectReceived) {
 		
 	}
+	
+	
+	
+  @Override
+  public void onChatConnectionStateChanged(ChatService chatService, ChatConnectionState prevState,
+      ChatConnectionState nextState) {
+    if (chatService.getTag().equals("ChatClient")) {
+      if (nextState == ChatConnectionState.OFFLINE) {
+        setDisabled(true);
+      }
+      if (nextState == ChatConnectionState.ONLINE) {
+        setDisabled(false);
+      }
+    }
+  }
 	
 }

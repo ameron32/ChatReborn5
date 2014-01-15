@@ -235,4 +235,8 @@ public class ChatClient extends ChatService {
     task.execute();
   }
   
+  public void addChatClientListener(ChatListener listener) {
+    client.addListener(listener);
+  }
+  
 }
