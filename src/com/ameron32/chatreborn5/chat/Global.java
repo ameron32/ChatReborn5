@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.ameron32.chatreborn5.chat.MessageTemplates.*;
+import android.app.Activity;
+import android.content.Context;
+
+import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
 
 public class Global {
 	/**
@@ -15,10 +18,12 @@ public class Global {
 	/**
 	 * 
 	 */
-	public static void set() {
+	public static void set(Context context) {
 //		Local.username = "user" + (new java.util.Random().nextInt(90) + 10);
 //		Local.hostname = "localhost";
+	  Global.activity = (Activity) context;
 	}
+	private static Activity activity;
 	
 	public static class Server {
 		private static final TreeMap<Long, MessageBase> serverChatHistory 
@@ -55,20 +60,28 @@ public class Global {
 
 		public static ChatHistory clientChatHistory = new ChatHistory();
 		
-		public static void addToHistory(TreeMap<Long, MessageBase> additions) {
-			clientChatHistory.addToHistory(additions);
+		public static void addToHistory(final TreeMap<Long, MessageBase> additions) {
+		  activity.runOnUiThread(new Runnable() { public void run() {
+		    clientChatHistory.addToHistory(additions);
+		  }});
 		}
 
-		public static void addToHistory(MessageBase mc) {
-			clientChatHistory.addToHistory(mc);
+		public static void addToHistory(final MessageBase mc) {
+		  activity.runOnUiThread(new Runnable() { public void run() {
+		    clientChatHistory.addToHistory(mc);
+		  }});
 		}
 
-		public static void unpackServerHistory(TreeMap<Long, MessageBase> historyBundle) {
-			clientChatHistory.unpackServerHistory(historyBundle);
+		public static void unpackServerHistory(final TreeMap<Long, MessageBase> historyBundle) {
+		  activity.runOnUiThread(new Runnable() { public void run() {
+		    clientChatHistory.unpackServerHistory(historyBundle);
+		  }});
 		}
 
 		public static void clearChatHistory() {
-			clientChatHistory.clearChatHistory();
+			activity.runOnUiThread(new Runnable() { public void run() {
+			  clientChatHistory.clearChatHistory();
+			}});
 		}
 	}
 	

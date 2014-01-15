@@ -89,7 +89,7 @@ public class NetworkMonitorFragment extends CoreFragment implements ChatConnecti
           ServicesOrganizer.chatServer.startServer();
         }
         else {
-          ServicesOrganizer.chatServer.stopServerIn(1000);
+          ServicesOrganizer.chatServer.stopServerIn(10000);
         }
       }
     });

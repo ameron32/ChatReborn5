@@ -118,8 +118,6 @@ public class CoreFragment extends Fragment {
     catch (ClassCastException e) {
       throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
     }
-    
-    NewMessageNotification.notify(getActivity(), this.getClass().getSimpleName() + " attached", fragmentId);
   }
   
   @Override

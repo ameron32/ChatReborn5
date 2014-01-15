@@ -263,7 +263,7 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
               btn_clear.setVisibility(RelativeLayout.VISIBLE);
               ibSend.setVisibility(RelativeLayout.VISIBLE);
               voice.setVisibility(RelativeLayout.INVISIBLE);
-              redButton.setImageDrawable(getResources().getDrawable(R.drawable.bluebutton));
+              redButton.setImageDrawable(getResources().getDrawable(R.drawable.blue_button_x));
             }
           }
           else {
@@ -277,7 +277,7 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
               btn_clear.setVisibility(RelativeLayout.INVISIBLE);
               ibSend.setVisibility(RelativeLayout.INVISIBLE);
               voice.setVisibility(RelativeLayout.VISIBLE);
-              redButton.setImageDrawable(getResources().getDrawable(R.drawable.redbutton));
+              redButton.setImageDrawable(getResources().getDrawable(R.drawable.red_button_x));
             }
           }
         }

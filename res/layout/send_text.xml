@@ -4,7 +4,7 @@
     android:layout_height="wrap_content" >
 
     <RelativeLayout
-        android:id="@+id/flFancyButton"
+        android:id="@+id/rlFancyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -12,10 +12,11 @@
 
         <ImageView
             android:id="@+id/redButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:background="@null"
-            android:src="@drawable/redbutton" />
+            android:scaleType="centerInside"
+            android:src="@drawable/red_button_x" />
 
         <ImageButton
             android:id="@+id/send_button"
@@ -34,46 +35,65 @@
             android:src="@drawable/ic_action_microphone" />
     </RelativeLayout>
 
-    <MultiAutoCompleteTextView
-        android:id="@+id/message"
+    <RelativeLayout
+        android:id="@+id/rlAlignment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ivCharacter"
-        android:layout_alignTop="@+id/ivCharacter"
-        android:layout_toLeftOf="@+id/flFancyButton"
-        android:layout_toRightOf="@+id/ivCharacter"
-        android:ems="10"
-        android:gravity="bottom"
-        android:hint="Message"
-        android:imeOptions="actionSend"
-        android:maxHeight="200dp"
-        android:textSize="12dp" />
-
-    <TextView
-        android:id="@+id/tvDebug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/message"
-        android:layout_alignRight="@+id/clear_text"
-        android:layout_alignTop="@+id/ivCharacter"
-        android:gravity="right"
-        android:text="debug" />
-
-    <ImageView
-        android:id="@+id/ivCharacter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@+id/rlFancyButton"
         android:layout_alignParentTop="true"
-        android:src="@drawable/gen_avatar" />
+        android:layout_toLeftOf="@+id/rlFancyButton" >
 
-    <ImageButton
-        android:id="@+id/clear_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/flFancyButton"
-        android:background="@null"
-        android:src="@drawable/ic_action_cancel" />
+        <MultiAutoCompleteTextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ivCharacter"
+            android:layout_alignTop="@+id/ivCharacter"
+            android:layout_toRightOf="@+id/ivCharacter"
+            android:ems="10"
+            android:gravity="bottom"
+            android:hint="Message"
+            android:imeOptions="actionSend"
+            android:maxHeight="200dp"
+            android:textSize="12dp" />
+
+        <ImageView
+            android:id="@+id/ivCharacter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/gen_avatar" />
+
+        <ImageButton
+            android:id="@+id/clear_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/message"
+            android:background="@null"
+            android:src="@drawable/ic_action_cancel" />
+
+        <TextView
+            android:id="@+id/tvDebug"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="right"
+            android:text="debug" />
+        
+        <org.lucasr.twowayview.TwoWayView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/lvItems"
+            style="@style/TwoWayView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/ivCharacter"
+            android:drawSelectorOnTop="false" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

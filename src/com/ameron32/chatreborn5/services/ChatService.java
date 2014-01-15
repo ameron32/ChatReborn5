@@ -99,7 +99,7 @@ public abstract class ChatService extends Service {
 //		init(nManager);
 //		nManager.notify(getSTOP_NOTIFICATION_ID(), builder.build());
 
-	  NewMessageNotification.notify(context, new Intent(context, MainActivity.class), getSimpleName() + " Started", "Click to Open Application", 0, getSTOP_NOTIFICATION_ID());
+	  NewMessageNotification.notify(context, new Intent(context, MainActivity.class), getSimpleName() + " Stopped", "Click to Open Application", 0, getSTOP_NOTIFICATION_ID());
 	  
 		clearNotification(getSTART_NOTIFICATION_ID());
 		

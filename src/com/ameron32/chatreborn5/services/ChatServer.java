@@ -240,6 +240,7 @@ public class ChatServer extends ChatService {
           int totalTimeInMillis = params[0];
           int updates = 10;
           int timePerUpdate = totalTimeInMillis / updates;
+          changeState(ChatConnectionState.DISCONNECTING);
           for (int u = 0; u < updates; u++) {
             sendChatMessage("Server shutting down in " + ((totalTimeInMillis - (timePerUpdate * u)) / 1000)
                 + " seconds!");
@@ -316,6 +317,7 @@ public class ChatServer extends ChatService {
 		final ChatMessage chatMessage = new ChatMessage();
 		chatMessage.name = serverName;
 		chatMessage.setText(msg);
+		chatMessage.setServerRelayed();
 		getServer().sendToAllTCP(chatMessage);
 	}
 }

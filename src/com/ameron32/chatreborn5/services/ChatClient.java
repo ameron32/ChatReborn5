@@ -1,6 +1,8 @@
 package com.ameron32.chatreborn5.services;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.content.Intent;
 import android.os.IBinder;
@@ -44,7 +46,6 @@ public class ChatClient extends ChatService {
       final SystemMessage request = new SystemMessage();
       request.name = Global.Local.username;
       request.setText("history request");
-      // request.setIsHistoryRequest(true);
       request.attachTags(MessageTag.ClientHistoryRequest);
       client.sendTCP(request);
     }
@@ -85,21 +86,6 @@ public class ChatClient extends ChatService {
     }
   };
   
-  // private boolean isConnected = false;
-  // public boolean getIsConnected() {
-  // return isConnected;
-  // }
-  // public void setIsConnected(boolean state) {
-  // isConnected = state;
-  // }
-  //
-  // private boolean isPrepared = false;
-  // public boolean getIsPrepared() {
-  // return isPrepared;
-  // }
-  // public void setIsPrepared(boolean state) {
-  // isPrepared = state;
-  // }
   public void disconnect() {
     if (getState() == ChatConnectionState.ONLINE) {
       changeState(ChatConnectionState.DISCONNECTING);
@@ -115,16 +101,9 @@ public class ChatClient extends ChatService {
   // SERVICE Calls
   // --------------------------------------
   
-  // private boolean isStarted = false;
-  // public boolean getIsStarted() {
-  // return isStarted;
-  // }
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     com.esotericsoftware.minlog.Log.set(com.esotericsoftware.minlog.Log.LEVEL_DEBUG);
-    // if (getState() == ChatConnectionState.OFFLINE) {
-    // if (intent != null) connect();
-    // }
     return super.onStartCommand(intent, flags, startId);
   }
   
@@ -142,6 +121,9 @@ public class ChatClient extends ChatService {
       Network.register(client);
       
       client.addListener(chatListener);
+      if (unaddedListenerQueue.size() > 0) {
+        for (ChatListener queuedListener : unaddedListenerQueue) { client.addListener(queuedListener); }
+      }
       
       changeState(ChatConnectionState.PREPARED);
       
@@ -158,11 +140,9 @@ public class ChatClient extends ChatService {
             e.printStackTrace();
           }
         }
-        
+
         @Override
-        protected void onPostExecute() {
-          // all UIs should be notified that now connected
-        }
+        protected void onPostExecute() {}
       }.execute();
     }
   }
@@ -235,8 +215,14 @@ public class ChatClient extends ChatService {
     task.execute();
   }
   
+  public List<ChatListener> unaddedListenerQueue = new LinkedList<ChatListener>();
   public void addChatClientListener(ChatListener listener) {
-    client.addListener(listener);
+    if (client != null) {
+      client.addListener(listener);
+    }
+    else {
+      if (!unaddedListenerQueue.contains(listener)) unaddedListenerQueue.add(listener);
+    }
   }
   
 }

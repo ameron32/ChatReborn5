@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.ameron32.chatreborn5.chat.Global;
 import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer;
 import com.ameron32.chatreborn5.organization.ServicesOrganizer;
@@ -21,6 +22,7 @@ import com.ameron32.chatreborn5.services.ChatClient;
 import com.ameron32.chatreborn5.services.ChatServer;
 import com.ameron32.chatreborn5.services.ChatService;
 import com.ameron32.chatreborn5.views.SendBar;
+import com.ameron32.chatreborn5.views.TouchlessSlidingPaneLayout;
 
 /**
  * An activity representing the represents a a list of Screens and its details
@@ -36,8 +38,8 @@ import com.ameron32.chatreborn5.views.SendBar;
 public class MainActivity extends FragmentActivity 
   implements ScreenListFragment.Callbacks, OnFragmentInteractionListener {
   
-  private SlidingPaneLayout mSlidingLayout;
-  private ActionBar         mActionBar;
+  private TouchlessSlidingPaneLayout mSlidingLayout;
+  private ActionBar                  mActionBar;
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class MainActivity extends FragmentActivity
     
     mActionBar = getActionBar();
     
-    mSlidingLayout = (SlidingPaneLayout) findViewById(R.id.sliding_pane_layout);
+    mSlidingLayout = (TouchlessSlidingPaneLayout) findViewById(R.id.sliding_pane_layout);
     
     mSlidingLayout.setPanelSlideListener(new SliderListener());
     mSlidingLayout.openPane();
@@ -58,7 +60,7 @@ public class MainActivity extends FragmentActivity
     mSlidingLayout.getViewTreeObserver().addOnGlobalLayoutListener(new FirstLayoutListener());
     
     // TODO: If exposing deep links into your app, handle intents here.
-       
+    
     iServer = new Intent(this, ChatServer.class);
     bindService(iServer, ServicesOrganizer.mServerConnection, ContextWrapper.BIND_AUTO_CREATE);
     startService(iServer);
@@ -68,16 +70,19 @@ public class MainActivity extends FragmentActivity
     
     SendBar sendBar = ((SendBar) findViewById(R.id.vSendBar));
     ChatService.addWatcher(sendBar);
+    
+    Global.set(MainActivity.this);
   }
   
   Intent iServer, iClient;
+  
   @Override
   protected void onDestroy() {
     super.onDestroy();
     unbindService(ServicesOrganizer.mServerConnection);
     unbindService(ServicesOrganizer.mClientConnection);
   }
-
+  
   /**
    * Callback method from {@link ScreenListFragment.Callbacks} indicating that
    * the item with the given ID was selected.
@@ -136,6 +141,7 @@ public class MainActivity extends FragmentActivity
     
     @Override
     public void onPanelSlide(View view, float v) {}
+    
   }
   
   private void panelClosed() {
@@ -194,24 +200,20 @@ public class MainActivity extends FragmentActivity
     
   }
   
-  
-  
-  
-//  private MyServiceConnection mConnection = new MyServiceConnection();
-//  private ChatServer chatServer;
-//  public class MyServiceConnection implements ServiceConnection {
-//    
-//    @Override
-//    public void onServiceConnected(ComponentName name, IBinder service) {
-//      MyBinder mBinder = (MyBinder) service;
-//      chatServer = (ChatServer) mBinder.getService();
-//    }
-//    
-//    @Override
-//    public void onServiceDisconnected(ComponentName name) {
-//      
-//    }
-//  }
-  
+  // private MyServiceConnection mConnection = new MyServiceConnection();
+  // private ChatServer chatServer;
+  // public class MyServiceConnection implements ServiceConnection {
+  //
+  // @Override
+  // public void onServiceConnected(ComponentName name, IBinder service) {
+  // MyBinder mBinder = (MyBinder) service;
+  // chatServer = (ChatServer) mBinder.getService();
+  // }
+  //
+  // @Override
+  // public void onServiceDisconnected(ComponentName name) {
+  //
+  // }
+  // }
   
 }
