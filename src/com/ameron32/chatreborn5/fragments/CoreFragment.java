@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.ameron32.chatreborn5.R;
 import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
-import com.ameron32.chatreborn5.notifications.NewMessageNotification;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer.FragmentReference;
 

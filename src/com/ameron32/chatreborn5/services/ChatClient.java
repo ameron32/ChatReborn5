@@ -62,7 +62,9 @@ public class ChatClient extends ChatService {
         final ChatConnection chatConnection) {
       Global.Local.addToHistory(systemMessage);
       
-      notifyMessage(systemMessage.name + "[" + systemMessage.getText() + "]");
+      // send notification UNLESS message is filtered
+      if (!systemMessage.hasAnyOfTags(Global.Local.clientChatHistory.getFilters().toArray(new MessageTag[0])))
+        notifyMessage(systemMessage.name + "[" + systemMessage.getText() + "]");
       
     }
     

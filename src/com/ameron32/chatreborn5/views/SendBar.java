@@ -2,6 +2,8 @@ package com.ameron32.chatreborn5.views;
 
 import java.util.ArrayList;
 
+import org.lucasr.twowayview.TwoWayView;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -24,6 +26,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.ameron32.chatreborn5.R;
+import com.ameron32.chatreborn5.adapters.UnreadMessageAdapter;
+import com.ameron32.chatreborn5.chat.ChatListener;
 import com.ameron32.chatreborn5.chat.Global;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
 import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
@@ -38,6 +42,9 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   private Context                   context;
   
   private LayoutInflater            inflater;
+  
+  private TwoWayView                twlvUnreads;
+  private UnreadMessageAdapter      umAdapter;
   
   private MultiAutoCompleteTextView etMessage;
   private ImageButton               btn_clear;
@@ -72,6 +79,8 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     inflater.inflate(R.layout.send_text, this, true);
     
+    twlvUnreads = (TwoWayView) findViewById(R.id.twlvUnreads);
+    
     etMessage = (MultiAutoCompleteTextView) findViewById(R.id.message);
     btn_clear = (ImageButton) findViewById(R.id.clear_text);
     
@@ -86,6 +95,21 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     ibSend.setVisibility(INVISIBLE);
     voice.setVisibility(VISIBLE);
     btn_clear.setVisibility(INVISIBLE);
+    
+    umAdapter = new UnreadMessageAdapter(context);
+    twlvUnreads.setAdapter(umAdapter);
+    if (ServicesOrganizer.chatClient != null) {
+    ServicesOrganizer.chatClient.addChatClientListener(new ChatListener() {
+
+      @Override
+      protected void onReceivedComplete(boolean wasChatObjectReceived) {
+        super.onReceivedComplete(wasChatObjectReceived);
+        if (wasChatObjectReceived) twlvUnreads.post(new Runnable() { public void run() {
+          umAdapter.notifyDataSetChanged();
+        }});
+      }
+    });
+    }
     
     setHint("Message");
     setButtonClearListener();

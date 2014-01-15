@@ -2,7 +2,9 @@ package com.ameron32.chatreborn5;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.ameron32.chatreborn5.chat.Global;
+import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
 import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
 import com.ameron32.chatreborn5.organization.FragmentOrganizer;
 import com.ameron32.chatreborn5.organization.ServicesOrganizer;
@@ -35,8 +38,8 @@ import com.ameron32.chatreborn5.views.TouchlessSlidingPaneLayout;
  * This activity also implements the required
  * {@link ScreenListFragment.Callbacks} interface to listen for item selections.
  */
-public class MainActivity extends FragmentActivity 
-  implements ScreenListFragment.Callbacks, OnFragmentInteractionListener {
+public class MainActivity extends FragmentActivity implements ScreenListFragment.Callbacks,
+    OnFragmentInteractionListener {
   
   private TouchlessSlidingPaneLayout mSlidingLayout;
   private ActionBar                  mActionBar;
@@ -70,6 +73,8 @@ public class MainActivity extends FragmentActivity
     
     SendBar sendBar = ((SendBar) findViewById(R.id.vSendBar));
     ChatService.addWatcher(sendBar);
+    
+    Global.Local.clientChatHistory.setFilters(MessageTag.ServerChatter, MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage);
     
     Global.set(MainActivity.this);
   }
@@ -120,7 +125,42 @@ public class MainActivity extends FragmentActivity
       mSlidingLayout.openPane();
       return true;
     }
+    if (item.getItemId() == R.id.exit) {
+      requestExit();
+    }
     return super.onOptionsItemSelected(item);
+  }
+  
+  protected void requestExit() {
+    final AlertDialog.Builder d = new AlertDialog.Builder(this);
+    d.setMessage("Stay Connected?");
+
+    final DialogInterface.OnClickListener l = new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        switch (which) {
+        case DialogInterface.BUTTON_POSITIVE:
+          stopService(iServer);
+          stopService(iClient);
+
+          finish();
+          break;
+        case DialogInterface.BUTTON_NEUTRAL:
+          finish();
+          break;
+        case DialogInterface.BUTTON_NEGATIVE:
+          // do nothing
+          break;
+        }
+        dialog.dismiss();
+      }
+    };
+
+    d.setPositiveButton("No", l);
+    d.setNeutralButton("Yes", l);
+    d.setNegativeButton("Cancel", l);
+    d.create();
+    d.show();
   }
   
   /**

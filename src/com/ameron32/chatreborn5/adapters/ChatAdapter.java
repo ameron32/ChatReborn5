@@ -1,4 +1,4 @@
-package com.ameron32.chatreborn5.chat;
+package com.ameron32.chatreborn5.adapters;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ameron32.chatreborn5.R;
+import com.ameron32.chatreborn5.chat.MessageTemplates;
 import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
 import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
@@ -56,9 +57,10 @@ public class ChatAdapter extends BaseAdapter {
     return -1l;
   }
   
+  MessageBase item;
   @Override
   public View getView(final int position, View convertView, final ViewGroup parent) {
-    final MessageBase item = getItem(position);
+    item = getItem(position);
     if (item instanceof SystemMessage) {
       convertView = inflater.inflate(R.layout.chat_sysmsg_ui, parent, false);
       holder = new ViewHolder();
@@ -139,6 +141,7 @@ public class ChatAdapter extends BaseAdapter {
     holder.tvMsg.setText(item.getText());
     // holder.tvMsg.setTypeface(Loader.fonts.get(Fonts.neutonregular));
     
+    item = null;
     return convertView;
   }
   

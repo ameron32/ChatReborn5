@@ -37,60 +37,33 @@ public class MessageTemplates {
   static public class MessageBase extends NamedBase {
     
     // FEATURES OF ALL MESSAGES
-    private short                     revision;                        // newest
-                                                                        // revision
-                                                                        // displayed
-                                                                        // automatically
-                                                                        // by
-                                                                        // adapter.
-    private long                      keyId;                           // no
-                                                                        // two
-                                                                        // messages
-                                                                        // will
-                                                                        // share
-                                                                        // the
-                                                                        // same
-                                                                        // keyId.
-                                                                        
+    private short                     revision;
+    // newest revision displayed automatically by adapter.
+    
+    private long                      keyId;
+    // no two messages will share the same keyId.
+    
     /**
      * messages need a key. the arrayAdapter should only show the most recent
      * edit.
      * 
      */
     
-    private String                    originatorName;                  // client
-                                                                        // who
-                                                                        // sent
-                                                                        // the
-                                                                        // message,
-                                                                        // or
-                                                                        // server
-    private long                      originatingTimeStamp;            // time
-                                                                        // when
-                                                                        // the
-                                                                        // client/server
-                                                                        // created
-                                                                        // the
-                                                                        // message
-    long                              serverTimeStamp;                 // time
-                                                                        // when
-                                                                        // the
-                                                                        // server
-                                                                        // accepted
-                                                                        // and
-                                                                        // resent
-                                                                        // the
-                                                                        // message
-    // date sorting in adapter. all overwrites keep this timeStamp.
-    private long                      clientReceivedTimeStamp;         // time
-                                                                        // when
-                                                                        // YOUR
-                                                                        // client
-                                                                        // received
-                                                                        // the
-                                                                        // message
-    private String                    text;                            // message
-                                                                        // text
+    private String                    originatorName;
+    // client who sent the message, or server
+    
+    private long                      originatingTimeStamp;
+    // time when the client/server created the message
+    
+    long                              serverTimeStamp;
+    // time when the server accepted and resent the message date sorting in
+    // adapter. all overwrites keep this timeStamp.
+    
+    private long                      clientReceivedTimeStamp;
+    // time when YOUR client received the message
+    
+    private String                    text;
+    // message text
                                                                         
     private final TreeSet<MessageTag> tags = new TreeSet<MessageTag>();
     
@@ -197,10 +170,11 @@ public class MessageTemplates {
   }
   
   static public class AttachableMessage extends MessageBase { // attach to
+    
                                                               // Chat-Message
     
     long attachToKeyId; // same number as keyId from messageClass
-    
+                        
     public AttachableMessage(MessageBase mc) {
       super();
       this.attachToKeyId = mc.keyId;
@@ -209,8 +183,9 @@ public class MessageTemplates {
   }
   
   static public class CommentMessage extends AttachableMessage { // attach to
+    
                                                                  // Chat-Message
-  
+    
     String commenterName;
     String commentText;
     
@@ -220,8 +195,9 @@ public class MessageTemplates {
   }
   
   static public class EditMessage extends AttachableMessage { // attach to
-                                                              // Chat-Message
-  
+    
+    // Chat-Message
+    
     String editorName;
     String revisedText;
     

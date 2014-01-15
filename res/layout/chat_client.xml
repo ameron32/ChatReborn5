@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?><RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlAll2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CCCCCC" >
-    
+
     <com.fortysevendeg.swipelistview.SwipeListView
         xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@+id/slvChatHistory"
@@ -20,12 +21,19 @@
         swipe:swipeFrontView="@+id/front"
         swipe:swipeMode="left"
         swipe:swipeOpenOnLongPress="true" />
-    
+
     <TextView
         android:id="@+id/tvIsTyping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_above="@+id/spacer1"
+        android:layout_alignParentLeft="true" />
+
+    <Space
+        android:id="@+id/spacer1"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>

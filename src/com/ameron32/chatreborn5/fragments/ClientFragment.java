@@ -10,9 +10,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ameron32.chatreborn5.R;
-import com.ameron32.chatreborn5.chat.ChatAdapter;
+import com.ameron32.chatreborn5.adapters.ChatAdapter;
 import com.ameron32.chatreborn5.chat.ChatListener;
 import com.ameron32.chatreborn5.chat.Global;
+import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
 import com.ameron32.chatreborn5.interfaces.ChatConnectionWatcher;
 import com.ameron32.chatreborn5.notifications.NewMessageBar;
 import com.ameron32.chatreborn5.organization.ServicesOrganizer;
@@ -58,7 +59,7 @@ public class ClientFragment extends CoreFragment implements ChatConnectionWatche
   }
 
   private void init() {
-    chatAdapter = new ChatAdapter(getActivity(), Global.Local.clientChatHistory.getFilteredHistory());
+    chatAdapter = new ChatAdapter(getActivity(), Global.Local.getFilteredClientChatHistory());
     slvChatHistory.setAdapter(chatAdapter);
     ServicesOrganizer.chatClient.addChatClientListener(new ChatListener() {
 
@@ -95,9 +96,15 @@ public class ClientFragment extends CoreFragment implements ChatConnectionWatche
   @Override
   public void onChatConnectionStateChanged(ChatService chatService, ChatConnectionState prevState,
       ChatConnectionState nextState) {
-    slvChatHistory.post(new Runnable() { public void run() {
-      chatAdapter.clear();
-    }});
+    // Clear the chat ONLY when ChatClient comes ONLINE
+    if (chatService.getTag().equals("ChatClient")) {
+      if (nextState == ChatConnectionState.ONLINE) {
+        slvChatHistory.post(new Runnable() { public void run() {
+          chatAdapter.clear();
+          chatAdapter.notifyDataSetChanged();
+        }});
+      }
+    }
   }
   
   
