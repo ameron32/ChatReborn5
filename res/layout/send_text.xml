@@ -3,33 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
+    <com.ameron32.chatreborn5.views.MessageFlipper
+        android:id="@+id/vfNotify"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" >
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.ameron32.chatreborn5.views.MessageFlipper>
+
     <RelativeLayout
         android:id="@+id/rlFancyButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/SendButton"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" >
+        android:layout_below="@+id/vfNotify" >
 
-        <ImageView
+        <ImageButton
             android:id="@+id/redButton"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            style="@style/SendButton"
             android:background="@null"
-            android:scaleType="centerInside"
             android:src="@drawable/red_button_x" />
 
         <ImageButton
+            android:id="@+id/blueButton"
+            style="@style/SendButton"
+            android:background="@null"
+            android:src="@drawable/blue_button_x" />
+
+        <ImageButton
             android:id="@+id/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/SendButton"
             android:layout_centerInParent="true"
             android:background="@null"
             android:src="@drawable/ic_action_send_now" />
 
         <ImageButton
             android:id="@+id/mic_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/SendButton"
             android:layout_centerInParent="true"
             android:background="@null"
             android:src="@drawable/ic_action_microphone" />
@@ -40,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/rlFancyButton"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/vfNotify"
         android:layout_toLeftOf="@+id/rlFancyButton" >
 
         <MultiAutoCompleteTextView
@@ -61,8 +72,8 @@
             android:id="@+id/ivCharacter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:src="@drawable/gen_avatar" />
 
         <ImageButton
@@ -84,7 +95,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/ivCharacter"
             android:drawSelectorOnTop="false" />
-        
+
         <TextView
             android:id="@+id/tvDebug"
             android:layout_width="wrap_content"
@@ -94,6 +105,12 @@
             android:gravity="right"
             android:text="debug" />
 
+        <TextView
+            android:id="@+id/tvAudioRMSTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
     </RelativeLayout>
 
 </RelativeLayout>

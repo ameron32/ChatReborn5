@@ -1,6 +1,6 @@
 package com.ameron32.chatreborn5.adapters;
 
-import java.util.Map;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,23 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ameron32.chatreborn5.R;
-import com.ameron32.chatreborn5.chat.Global;
-import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
-import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
-import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
+import com.ameron32.chatreborn5.R.id;
+import com.ameron32.chatreborn5.R.layout;
+import com.ameron32.chatreborn5.dummy.UserContent;
+import com.ameron32.chatreborn5.dummy.UserContent.User;
 
-public class UnreadMessageAdapter extends BaseAdapter {
+public class UserAdapter extends BaseAdapter {
   
   // TODO replace with a collection of real data
-  private static final Map<Long, MessageBase> DATA = Global.Local.getFilteredClientChatHistory();
+  private static final List<User> DATA = UserContent.ITEMS;
   
-  private LayoutInflater                      mInflater;
-  private Context                             context;
+  private LayoutInflater               mInflater;
   
-  public UnreadMessageAdapter(Context context) {
+  public UserAdapter(Context context) {
     // Cache the LayoutInflate to avoid asking for a new one each time.
     mInflater = LayoutInflater.from(context);
-    this.context = context;
+    
   }
   
   /**
@@ -40,17 +39,8 @@ public class UnreadMessageAdapter extends BaseAdapter {
   /**
    * @see android.widget.ListAdapter#getItem(int)
    */
-  public MessageBase getItem(int position) {
-    return DATA.get(getKeyAt(position));
-  }
-  
-  private long getKeyAt(int position) {
-    int counter = 0;
-    for (Map.Entry<Long, MessageBase> entry : DATA.entrySet()) {
-      if (position == counter) return entry.getKey();
-      counter++;
-    }
-    return -1l;
+  public Object getItem(int position) {
+    return DATA.get(position);
   }
   
   /**
@@ -59,7 +49,7 @@ public class UnreadMessageAdapter extends BaseAdapter {
    * @see android.widget.ListAdapter#getItemId(int)
    */
   public long getItemId(int position) {
-    return getItem(position).getTimeStamp();
+    return position;
   }
   
   /**
@@ -68,18 +58,17 @@ public class UnreadMessageAdapter extends BaseAdapter {
    * @see android.widget.ListAdapter#getView(int, android.view.View,
    *      android.view.ViewGroup)
    */
-  public View getView(final int position, View convertView, final ViewGroup parent) {
+  public View getView(int position, View convertView, ViewGroup parent) {
     // A ViewHolder keeps references to children views to avoid unneccessary
-    // calls to findViewById() on each row.
+    // calls
+    // to findViewById() on each row.
     ViewHolder holder;
-  
-    item = getItem(position);
     
     // When convertView is not null, we can reuse it directly, there is no need
     // to reinflate it. We only inflate a new View when the convertView supplied
     // by ListView is null.
     if (convertView == null) {
-      convertView = mInflater.inflate(R.layout.list_item_unreadmessage, parent, false);
+      convertView = mInflater.inflate(R.layout.list_item_user, parent, false);
       
       // Creates a ViewHolder and store references to the two children views
       // we want to bind data to.
@@ -98,24 +87,12 @@ public class UnreadMessageAdapter extends BaseAdapter {
     }
     
     // TODO Bind your data efficiently with the holder.
-    holder.title.setText("");
-      String subtitle = item.getText();
-      if (subtitle.length() > 15) {
-        subtitle = subtitle.substring(0, 14) + "...";
-      }
-    holder.subtitle.setText("");
-   
-    if (item instanceof ChatMessage) {
-      holder.thumbnail.setImageResource(R.drawable.ic_contact_picture_2);  
-    }
-    if (item instanceof SystemMessage) {
-      holder.thumbnail.setImageResource(R.drawable.ic_action_cancel);
-    }
+    holder.title.setText(DATA.get(position).name);
+    holder.subtitle.setText(DATA.get(position).notes);
+    holder.thumbnail.setImageResource(DATA.get(position).thumbnail);
     
-    item = null;
     return convertView;
   }
-  MessageBase item;
   
   static class ViewHolder {
     

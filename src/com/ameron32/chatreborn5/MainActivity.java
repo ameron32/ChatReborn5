@@ -63,20 +63,25 @@ public class MainActivity extends FragmentActivity implements ScreenListFragment
     mSlidingLayout.getViewTreeObserver().addOnGlobalLayoutListener(new FirstLayoutListener());
     
     // TODO: If exposing deep links into your app, handle intents here.
-    
-    iServer = new Intent(this, ChatServer.class);
-    bindService(iServer, ServicesOrganizer.mServerConnection, ContextWrapper.BIND_AUTO_CREATE);
-    startService(iServer);
-    iClient = new Intent(this, ChatClient.class);
-    bindService(iClient, ServicesOrganizer.mClientConnection, ContextWrapper.BIND_AUTO_CREATE);
-    startService(iClient);
+    if (iServer == null) {
+      iServer = new Intent(this, ChatServer.class);
+      bindService(iServer, ServicesOrganizer.mServerConnection, ContextWrapper.BIND_AUTO_CREATE);
+      startService(iServer);
+    }
+    if (iClient == null) {
+      iClient = new Intent(this, ChatClient.class);
+      bindService(iClient, ServicesOrganizer.mClientConnection, ContextWrapper.BIND_AUTO_CREATE);
+      startService(iClient);
+    }
     
     SendBar sendBar = ((SendBar) findViewById(R.id.vSendBar));
-    ChatService.addWatcher(sendBar);
-    
-    Global.Local.clientChatHistory.setFilters(MessageTag.ServerChatter, MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage);
-    
-    Global.set(MainActivity.this);
+    if (savedInstanceState == null) {
+      ChatService.addWatcher(sendBar);
+      
+      Global.Local.clientChatHistory.setFilters(MessageTag.ServerChatter, MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage);
+      
+      Global.set(MainActivity.this);
+    }
   }
   
   Intent iServer, iClient;
@@ -86,6 +91,11 @@ public class MainActivity extends FragmentActivity implements ScreenListFragment
     super.onDestroy();
     unbindService(ServicesOrganizer.mServerConnection);
     unbindService(ServicesOrganizer.mClientConnection);
+    
+    if (isFinishing()) {
+      stopService(iServer);
+      stopService(iClient);
+    }
   }
   
   /**
@@ -101,10 +111,9 @@ public class MainActivity extends FragmentActivity implements ScreenListFragment
     
     // ((ScreenDetailFragment)
     // getSupportFragmentManager().findFragmentById(R.id.content_pane)).setText(FragmentOrganizer.ITEM_MAP.get(id).title);
-    getSupportFragmentManager().beginTransaction().replace(R.id.content_pane, FragmentOrganizer.ITEM_MAP.get(id).fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+    getSupportFragmentManager().beginTransaction().replace(R.id.content_pane, FragmentOrganizer.ITEM_MAP.get(id).fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
     
     mSlidingLayout.closePane();
-    
   }
   
   @Override
@@ -190,7 +199,6 @@ public class MainActivity extends FragmentActivity implements ScreenListFragment
     
     // getSupportFragmentManager().findFragmentById(R.id.content_pane).setHasOptionsMenu(true);
     getSupportFragmentManager().findFragmentById(R.id.screen_list).setHasOptionsMenu(false);
-    
   }
   
   private void panelOpened() {

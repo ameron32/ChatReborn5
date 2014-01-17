@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.lucasr.twowayview.TwoWayView;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -21,19 +22,23 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.ViewFlipper;
 
 import com.ameron32.chatreborn5.R;
 import com.ameron32.chatreborn5.adapters.UnreadMessageAdapter;
 import com.ameron32.chatreborn5.chat.ChatListener;
 import com.ameron32.chatreborn5.chat.Global;
+import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
 import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
 import com.ameron32.chatreborn5.interfaces.ChatConnectionWatcher;
 import com.ameron32.chatreborn5.notifications.NewMessageBar;
 import com.ameron32.chatreborn5.organization.ServicesOrganizer;
+import com.ameron32.chatreborn5.services.ChatServer.ChatConnection;
 import com.ameron32.chatreborn5.services.ChatService;
 import com.ameron32.chatreborn5.services.ChatService.ChatConnectionState;
 
@@ -43,6 +48,7 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   
   private LayoutInflater            inflater;
   
+  private MessageFlipper            mfNotify;
   private TwoWayView                twlvUnreads;
   private UnreadMessageAdapter      umAdapter;
   
@@ -50,8 +56,9 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   private ImageButton               btn_clear;
   private ImageButton               voice;
   private ImageButton               ibSend;
-  private ImageView                 redButton;
-//  private ImageView                 voiceMicView;
+  private ImageButton               redButton;
+  private ImageButton               blueButton;
+  // private ImageView voiceMicView;
   
   private TextView                  tvDebug;
   
@@ -80,36 +87,20 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     inflater.inflate(R.layout.send_text, this, true);
     
     twlvUnreads = (TwoWayView) findViewById(R.id.twlvUnreads);
+    mfNotify = (MessageFlipper) findViewById(R.id.vfNotify);
     
     etMessage = (MultiAutoCompleteTextView) findViewById(R.id.message);
     btn_clear = (ImageButton) findViewById(R.id.clear_text);
     
     ibSend = (ImageButton) findViewById(R.id.send_button);
     voice = (ImageButton) findViewById(R.id.mic_button);
-    redButton = (ImageView) findViewById(R.id.redButton);
-//    voiceMicView = (ImageView) findViewById(R.id.mic_sound_view);
-    // voiceMicView.setImageDrawable(createVMV());
+    redButton = (ImageButton) findViewById(R.id.redButton);
+    blueButton = (ImageButton) findViewById(R.id.blueButton);
     
     tvDebug = (TextView) findViewById(R.id.tvDebug);
-
-    ibSend.setVisibility(INVISIBLE);
-    voice.setVisibility(VISIBLE);
-    btn_clear.setVisibility(INVISIBLE);
     
     umAdapter = new UnreadMessageAdapter(context);
     twlvUnreads.setAdapter(umAdapter);
-    if (ServicesOrganizer.chatClient != null) {
-    ServicesOrganizer.chatClient.addChatClientListener(new ChatListener() {
-
-      @Override
-      protected void onReceivedComplete(boolean wasChatObjectReceived) {
-        super.onReceivedComplete(wasChatObjectReceived);
-        if (wasChatObjectReceived) twlvUnreads.post(new Runnable() { public void run() {
-          umAdapter.notifyDataSetChanged();
-        }});
-      }
-    });
-    }
     
     setHint("Message");
     setButtonClearListener();
@@ -118,10 +109,16 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     setSendListener();
     
     if (ServicesOrganizer.chatClient != null) {
-      if (ServicesOrganizer.chatClient.getState() == ChatConnectionState.OFFLINE) hideMe();
-      else if (ServicesOrganizer.chatClient.getState() == ChatConnectionState.ONLINE) showMe();
-      else hideMe();
-    } else { hideMe(); }
+      if (ServicesOrganizer.chatClient.getState() == ChatConnectionState.OFFLINE)
+        hideMe();
+      else
+        if (ServicesOrganizer.chatClient.getState() == ChatConnectionState.ONLINE)
+          showMe();
+        else hideMe();
+    }
+    else {
+      hideMe();
+    }
   }
   
   private void hideMe() {
@@ -129,6 +126,17 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   }
   
   private void showMe() {
+    // ibSend.setVisibility(INVISIBLE);
+    // voice.setVisibility(VISIBLE);
+    // btn_clear.setVisibility(INVISIBLE);
+    
+    if (etMessage.getText().length() > 0) {
+      onTextIsFull();
+    }
+    else {
+      onTextIsEmpty();
+    }
+    
     setVisibility(VISIBLE);
   }
   
@@ -149,29 +157,23 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   SpeechRecognizer sr;
   boolean          isListening = false;
   
+  float            testRMSMax  = 0.0f;
+  float            testRMSMin  = 0.0f;
+  
   private void setVoiceListener() {
     sr = SpeechRecognizer.createSpeechRecognizer(context.getApplicationContext());
     sr.setRecognitionListener(new RecognitionListener() {
       
       @Override
       public void onBeginningOfSpeech() {
-        // TODO Auto-generated method stub
         tvd("onBeginningOfSpeech");
       }
       
       @Override
-      public void onBufferReceived(byte[] buffer) {
-        // TODO Auto-generated method stub
-        
-      }
+      public void onBufferReceived(byte[] buffer) {}
       
       @Override
-      public void onRmsChanged(float rmsdB) {
-        // TODO Auto-generated method stub
-        // voiceMicView.setScaleX(rmsdB);
-        // voiceMicView.setScaleY(rmsdB);
-        
-      }
+      public void onRmsChanged(float rmsdB) {}
       
       @Override
       public void onResults(Bundle results) {
@@ -184,28 +186,21 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
       
       @Override
       public void onReadyForSpeech(Bundle params) {
-//        voice.setImageDrawable(getResources().getDrawable(R.drawable.micwhite));
-//        voiceMicView.setVisibility(ImageView.VISIBLE);
         tvd("onReadyForSpeech");
       }
       
       @Override
       public void onPartialResults(Bundle partialResults) {
-        // TODO Auto-generated method stub
         tvd("onPartialResults");
       }
       
       @Override
       public void onEvent(int eventType, Bundle params) {
-        // TODO Auto-generated method stub
         tvd("onEvent");
       }
       
       @Override
       public void onError(int error) {
-        // TODO Auto-generated method stub
-        // voice.setImageDrawable(getResources().getDrawable(R.drawable.microphone));
-        // voiceMicView.setVisibility(ImageView.INVISIBLE);
         tvd("onError " + err(error));
       }
       
@@ -245,8 +240,6 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
       
       @Override
       public void onEndOfSpeech() {
-//        voice.setImageDrawable(getResources().getDrawable(R.drawable.microphone));
-//        voiceMicView.setVisibility(ImageView.INVISIBLE);
         tvd("onEndOfSpeech");
       }
       
@@ -255,7 +248,6 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
       
       @Override
       public boolean onTouch(View v, MotionEvent event) {
-        // TODO Auto-generated method stub
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
           sr.startListening(RecognizerIntent.getVoiceDetailsIntent(context.getApplicationContext()));
@@ -276,35 +268,22 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
       
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (connected) {
+//        if (connected) {
           if (s.length() > 0) {
             if (toggle == false) {
               toggle = true;
-//              SendTask sendTask = new SendTask(isTypingListener, false);
-//              sendTask.execute();
               sendTypingMessage(true);
-              
-              btn_clear.setVisibility(RelativeLayout.VISIBLE);
-              ibSend.setVisibility(RelativeLayout.VISIBLE);
-              voice.setVisibility(RelativeLayout.INVISIBLE);
-              redButton.setImageDrawable(getResources().getDrawable(R.drawable.blue_button_x));
+              onTextIsFull();
             }
           }
           else {
             if (toggle == true) {
-//              SendTask sendTask = new SendTask(isNotTypingListener, false);
-//              sendTask.execute();
               sendTypingMessage(false);
               toggle = false;
             }
-            if (ibSend.getVisibility() != RelativeLayout.INVISIBLE) {
-              btn_clear.setVisibility(RelativeLayout.INVISIBLE);
-              ibSend.setVisibility(RelativeLayout.INVISIBLE);
-              voice.setVisibility(RelativeLayout.VISIBLE);
-              redButton.setImageDrawable(getResources().getDrawable(R.drawable.red_button_x));
-            }
+            onTextIsEmpty();
           }
-        }
+//        }
       }
       
       @Override
@@ -325,29 +304,29 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     // etMessage.requestFocus();
   }
   
-//  public class SendTask extends AsyncTask<String, Integer, String> {
-//    
-//    private Runnable listener;
-//    private boolean  resetWhenComplete;
-//    
-//    public SendTask(Runnable listener, boolean resetWhenComplete) {
-//      this.listener = listener;
-//      this.resetWhenComplete = resetWhenComplete;
-//    }
-//    
-//    @Override
-//    protected String doInBackground(String... params) {
-//      listener.run();
-//      return null;
-//    }
-//    
-//    @Override
-//    protected void onPostExecute(String result) {
-//      super.onPostExecute(result);
-//      if (resetWhenComplete) resetEditText();
-//    }
-//    
-//  }
+  // public class SendTask extends AsyncTask<String, Integer, String> {
+  //
+  // private Runnable listener;
+  // private boolean resetWhenComplete;
+  //
+  // public SendTask(Runnable listener, boolean resetWhenComplete) {
+  // this.listener = listener;
+  // this.resetWhenComplete = resetWhenComplete;
+  // }
+  //
+  // @Override
+  // protected String doInBackground(String... params) {
+  // listener.run();
+  // return null;
+  // }
+  //
+  // @Override
+  // protected void onPostExecute(String result) {
+  // super.onPostExecute(result);
+  // if (resetWhenComplete) resetEditText();
+  // }
+  //
+  // }
   
   private void setSendListener() {
     ibSend.setOnClickListener(new View.OnClickListener() {
@@ -406,30 +385,8 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   }
   
   boolean connected = false;
-//  
-//  public void setConnected(boolean connected) {
-//    this.connected = connected;
-//    
-//    if (this.connected) {
-//      setVisibility(VISIBLE);
-//    }
-//    else {
-//      setVisibility(INVISIBLE);
-//    }
-//    
-//  }
   
-//  Runnable isTypingListener, isNotTypingListener;
-  
-//  public void setIsTypingListener(Runnable runnable) {
-//    isTypingListener = runnable;
-//  }
-//  
-//  public void setIsNotTypingListener(Runnable runnable) {
-//    isNotTypingListener = runnable;
-//  }
-  
-  private void sendMessage() {
+ private void sendMessage() {
     
     if (ServicesOrganizer.chatClient != null) {
       final String msg = getText().toString().trim();
@@ -437,7 +394,9 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
         ServicesOrganizer.chatClient.sendMessage(msg);
       }
     }
-    else { NewMessageBar.showMessage(context, "ChatClient has not been initialized."); }
+    else {
+      NewMessageBar.showMessage(context, "ChatClient has not been initialized.");
+    }
     
     resetEditText();
   }
@@ -445,12 +404,68 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   private void sendTypingMessage(boolean isTyping) {
     final SystemMessage systemMessage = new SystemMessage();
     systemMessage.name = Global.Local.username;
-    if (isTyping) systemMessage.setText("isTyping");
-    else systemMessage.setText("isNotTyping");
+    if (isTyping) {
+      systemMessage.setText("is typing...");
+      systemMessage.attachTags(MessageTag.HasStartedTypingMessage);
+    }
+    else {
+      systemMessage.setText("is not typing...");
+      systemMessage.attachTags(MessageTag.HasStoppedTypingMessage);
+    }
     systemMessage.attachTags(MessageTag.ServerChatter);
     ServicesOrganizer.chatClient.sendMessage(systemMessage);
-  }  
-
+  }
+  
+  private void onTextIsFull() {
+    
+    btn_clear.setVisibility(RelativeLayout.VISIBLE);
+    ibSend.setVisibility(RelativeLayout.VISIBLE);
+    voice.setVisibility(RelativeLayout.INVISIBLE);
+    
+    redButton.setVisibility(INVISIBLE);
+    blueButton.setVisibility(VISIBLE);
+  }
+  
+  private void onTextIsEmpty() {
+    
+    btn_clear.setVisibility(RelativeLayout.INVISIBLE);
+    ibSend.setVisibility(RelativeLayout.INVISIBLE);
+    voice.setVisibility(RelativeLayout.VISIBLE);
+    
+    redButton.setVisibility(VISIBLE);
+    blueButton.setVisibility(INVISIBLE);
+  }
+  
+  private ChatListener sendBarListener = new ChatListener() {
+                                         
+                                         @Override
+                                         protected void received(final ChatMessage chatMessage,
+                                             final ChatConnection chatConnection) {
+                                           super.received(chatMessage, chatConnection);
+                                           mfNotify.post(new Runnable() {
+                                             
+                                             public void run() {
+                                               Log.d("SendBar", "received/postRunnable");
+                                               mfNotify.addMessage(chatMessage);
+                                             }
+                                           });
+                                         }
+                                         
+                                         @Override
+                                         protected void onReceivedComplete(final boolean wasChatObjectReceived) {
+                                           super.onReceivedComplete(wasChatObjectReceived);
+                                           if (wasChatObjectReceived) {
+                                             twlvUnreads.post(new Runnable() {
+                                               
+                                               public void run() {
+                                                 Log.d("SendBar", "onReceivedComplete/postRunnable");
+                                                 umAdapter.notifyDataSetChanged();
+                                               }
+                                             });
+                                           }
+                                         }
+                                       };
+  
   @Override
   public void onChatConnectionStateChanged(ChatService chatService, ChatConnectionState prevState,
       ChatConnectionState nextState) {
@@ -469,10 +484,16 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
         this.post(new Runnable() {
           
           public void run() {
+            ServicesOrganizer.chatClient.addChatClientListener(sendBarListener);
             showMe();
           }
         });
       }
+      if (prevState == ChatConnectionState.ONLINE && nextState == ChatConnectionState.DISCONNECTING) {
+        connected = false;
+        hideMe();
+      }
     }
   }
+  
 }

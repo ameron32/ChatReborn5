@@ -52,7 +52,7 @@ public abstract class ChatService extends Service {
 	public void onDestroy() {
 	  Log.d("ChatService", "onDestroy");
 		watchers.clear();
-		stopNotification(getSTOP_NOTIFICATION_ID());
+//		stopNotification(getSTOP_NOTIFICATION_ID());
 		super.onDestroy();
 	}
 
@@ -61,49 +61,18 @@ public abstract class ChatService extends Service {
 	// --------------------------------------
 
 	private final Context context = this;
-
-//	private NotificationManager init(NotificationManager nManager) {
-//		if (nManager == null) 
-//			return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//		return nManager;
-//	}
 	
 	private void startNotification(String id) {
-//		NotificationCompat.Builder builder = new NotificationCompat.Builder(
-//				context).setSmallIcon(R.drawable.like)
-//				.setContentTitle(getSimpleName() + " Started")
-//				.setContentText("Click to Open Application");
-//
-//		Intent targetIntent = new Intent(context, MainActivity.class);
-//		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-//				targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//		builder.setContentIntent(contentIntent);
-//		nManager = init(nManager);
-//		nManager.notify(getSTART_NOTIFICATION_ID(), builder.build());
-
 	  NewMessageNotification.notify(context, new Intent(context, MainActivity.class), getSimpleName() + " Started", "Click to Open Application", 0, getSTART_NOTIFICATION_ID());
 	  
 		clearNotification(getSTOP_NOTIFICATION_ID());
 	}
 
-	private void stopNotification(String id) {
-//		NotificationCompat.Builder builder = new NotificationCompat.Builder(
-//				context).setSmallIcon(R.drawable.delete)
-//				.setContentTitle(getSimpleName() + " Stopped")
-//				.setContentText("Click to Open Application");
-//
-//		Intent targetIntent = new Intent(context, MainActivity.class);
-//		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-//				targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//		builder.setContentIntent(contentIntent);
-//		init(nManager);
-//		nManager.notify(getSTOP_NOTIFICATION_ID(), builder.build());
-
-	  NewMessageNotification.notify(context, new Intent(context, MainActivity.class), getSimpleName() + " Stopped", "Click to Open Application", 0, getSTOP_NOTIFICATION_ID());
-	  
-		clearNotification(getSTART_NOTIFICATION_ID());
-		
-	}
+//	private void stopNotification(String id) {
+//	  NewMessageNotification.notify(context, new Intent(context, MainActivity.class), getSimpleName() + " Stopped", "Click to Open Application", 0, getSTOP_NOTIFICATION_ID());
+//	  
+//		clearNotification(getSTART_NOTIFICATION_ID());
+//	}
 
 	private String getSimpleName() {
 		return getClass().getSimpleName();
@@ -135,27 +104,13 @@ public abstract class ChatService extends Service {
 	}
 	
 	private void createNotification(String title, String text, String id) {
-//		NotificationCompat.Builder builder = new NotificationCompat.Builder(
-//				context).setSmallIcon(R.drawable.chess)
-//				.setContentTitle(title)
-//				.setContentText(text);
-//		Intent targetIntent = new Intent(context, MainActivity.class);
-//		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-//				targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//		builder.setContentIntent(contentIntent);
-//		builder.setAutoCancel(true);
-//		
-//		init(nManager);
-//		nManager.notify(getSTOP_NOTIFICATION_ID(), builder.build());
-	  
 	  NewMessageNotification.notify(context, new Intent(context, MainActivity.class), title, text, 0, MESSAGE_NOTIFICATIONS);
 	}
 
 	// --------------------------------------
 	// NETWORK THREAD HANDLING
 	// --------------------------------------
-	
-	
+		
   abstract public class SimpleAsyncTask extends AsyncTask<Void, Void, Void> {
     
     abstract protected void doInBackground();

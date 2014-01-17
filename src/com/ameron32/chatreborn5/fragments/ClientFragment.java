@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ameron32.chatreborn5.R;
@@ -14,9 +15,11 @@ import com.ameron32.chatreborn5.adapters.ChatAdapter;
 import com.ameron32.chatreborn5.chat.ChatListener;
 import com.ameron32.chatreborn5.chat.Global;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
+import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
 import com.ameron32.chatreborn5.interfaces.ChatConnectionWatcher;
 import com.ameron32.chatreborn5.notifications.NewMessageBar;
 import com.ameron32.chatreborn5.organization.ServicesOrganizer;
+import com.ameron32.chatreborn5.services.ChatServer.ChatConnection;
 import com.ameron32.chatreborn5.services.ChatService;
 import com.ameron32.chatreborn5.services.ChatService.ChatConnectionState;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -48,8 +51,10 @@ public class ClientFragment extends CoreFragment implements ChatConnectionWatche
   
   SwipeListView slvChatHistory;
   ChatAdapter chatAdapter;
+  TextView tvTyping;
   private void initViews() {
     slvChatHistory = (SwipeListView) mRootView.findViewById(R.id.slvChatHistory);
+    tvTyping = (TextView) mRootView.findViewById(R.id.tvIsTyping);
   }
   
   @Override
@@ -62,6 +67,21 @@ public class ClientFragment extends CoreFragment implements ChatConnectionWatche
     chatAdapter = new ChatAdapter(getActivity(), Global.Local.getFilteredClientChatHistory());
     slvChatHistory.setAdapter(chatAdapter);
     ServicesOrganizer.chatClient.addChatClientListener(new ChatListener() {
+
+      @Override
+      protected void received(final SystemMessage systemMessage, final ChatConnection chatConnection) {
+        super.received(systemMessage, chatConnection);
+        if (systemMessage.hasAnyOfTags(MessageTag.HasStartedTypingMessage)) {
+          tvTyping.post(new Runnable() { public void run() {
+            tvTyping.setText(systemMessage.name + " " + systemMessage.getText());
+          }});
+        }
+        if (systemMessage.hasAnyOfTags(MessageTag.HasStoppedTypingMessage)) {
+          tvTyping.post(new Runnable() { public void run() {
+            tvTyping.setText("");
+          }});
+        }
+      }
 
       @Override
       protected void onReceivedComplete(boolean wasChatObjectReceived) {

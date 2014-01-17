@@ -17,6 +17,7 @@ import com.ameron32.chatreborn5.chat.MessageTemplates.ServerChatHistory;
 import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
 import com.ameron32.chatreborn5.chat.MessageTemplates.UpdateNames;
 import com.ameron32.chatreborn5.chat.Network;
+import com.ameron32.chatreborn5.dummy.UserContent;
 import com.ameron32.chatreborn5.services.ChatServer.ChatConnection;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
@@ -78,7 +79,7 @@ public class ChatClient extends ChatService {
     @Override
     protected void received(final UpdateNames updateNames,
         final ChatConnection chatConnection) {
-      Global.Local.groupUsers = updateNames.names;
+      UserContent.addItems(updateNames.getUsers());
       notifyMessage("Users Changed");
     }
     
@@ -176,7 +177,6 @@ public class ChatClient extends ChatService {
   }
   
   public class MyClientBinder extends MyBinder {
-    
     public ChatClient getService() {
       return ChatClient.this;
     }

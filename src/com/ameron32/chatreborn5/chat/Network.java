@@ -1,9 +1,18 @@
 package com.ameron32.chatreborn5.chat;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.ameron32.chatreborn5.chat.MessageTemplates.*;
+
+
+import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
+import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
+import com.ameron32.chatreborn5.chat.MessageTemplates.RegisterName;
+import com.ameron32.chatreborn5.chat.MessageTemplates.ServerChatHistory;
+import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
+import com.ameron32.chatreborn5.chat.MessageTemplates.UpdateNames;
+import com.ameron32.chatreborn5.dummy.UserContent.User;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -23,6 +32,8 @@ public class Network {
 		kryo.register(TreeMap.class);
 		kryo.register(TreeSet.class);
 		kryo.register(MessageTag.class);
+		kryo.register(User.class);
+		kryo.register(ArrayList.class);
 	}
 
 	

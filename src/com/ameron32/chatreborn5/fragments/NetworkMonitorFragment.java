@@ -12,13 +12,13 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.ameron32.chatreborn5.R;
+import com.ameron32.chatreborn5.adapters.UserAdapter;
 import com.ameron32.chatreborn5.interfaces.ChatConnectionWatcher;
 import com.ameron32.chatreborn5.organization.ServicesOrganizer;
 import com.ameron32.chatreborn5.services.ChatClient;
 import com.ameron32.chatreborn5.services.ChatServer;
 import com.ameron32.chatreborn5.services.ChatService;
 import com.ameron32.chatreborn5.services.ChatService.ChatConnectionState;
-
 
 public class NetworkMonitorFragment extends CoreFragment implements ChatConnectionWatcher {
   
@@ -40,16 +40,18 @@ public class NetworkMonitorFragment extends CoreFragment implements ChatConnecti
     Log.d("NetworkMonitorFragment", "onCreateView");
     // Inflate the layout for this fragment
     mRootView = inflater.inflate(R.layout.network_monitor, container, false);
-
+    
     initViews();
     return mRootView;
   }
   
   ToggleButton tbClient;
   ToggleButton tbServer;
-  TextView tvCStatus; String sCStatus;
-  TextView tvSStatus; String sSStatus;
-  ListView lvUsers;
+  TextView     tvCStatus;
+  String       sCStatus;
+  TextView     tvSStatus;
+  String       sSStatus;
+  ListView     lvUsers;
   
   private void initViews() {
     tbClient = (ToggleButton) mRootView.findViewById(R.id.tbClient);
@@ -59,8 +61,9 @@ public class NetworkMonitorFragment extends CoreFragment implements ChatConnecti
     tbServer = (ToggleButton) mRootView.findViewById(R.id.tbServer);
     tvSStatus = (TextView) mRootView.findViewById(R.id.tvSConnectionStatus);
   }
-
+  
   Intent iClient, iServer;
+  
   @Override
   public void onResume() {
     super.onResume();
@@ -100,41 +103,49 @@ public class NetworkMonitorFragment extends CoreFragment implements ChatConnecti
   private void populateViews() {
     tvCStatus.setText(ServicesOrganizer.chatClient.getState().name());
     tvSStatus.setText(ServicesOrganizer.chatServer.getState().name());
+    
+    lvUsers.setAdapter(new UserAdapter(getActivity()));
   }
-
-  
   
   @Override
   public void onPause() {
     super.onPause();
-
+    
   }
   
-  
-
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     Log.d("NetworkMonitorFragment", "onSaveInstanceState");
   }
-
+  
   @Override
-  public void onChatConnectionStateChanged(
-      final ChatService chatService, 
-      final ChatConnectionState prevState,
+  public void onChatConnectionStateChanged(final ChatService chatService, final ChatConnectionState prevState,
       final ChatConnectionState nextState) {
-    Log.d("NetworkMonitorFragment", "onChatConnectionStateChanged:" + chatService.getClass().getSimpleName() + ": from " + prevState.name() + " to " + nextState.name());
+    Log.d("NetworkMonitorFragment", "onChatConnectionStateChanged:" + chatService.getClass().getSimpleName()
+        + ": from " + prevState.name() + " to " + nextState.name());
     if (chatService.getTag().equals("ChatClient")) {
-      tvCStatus.post(new Runnable() { public void run() { 
-        sCStatus = nextState.name();
-        tvCStatus.setText(sCStatus); } });
+      if (tvCStatus != null) {
+        tvCStatus.post(new Runnable() {
+          
+          public void run() {
+            sCStatus = nextState.name();
+            tvCStatus.setText(sCStatus);
+          }
+        });
+      }
     }
     if (chatService.getTag().equals("ChatServer")) {
-      tvSStatus.post(new Runnable() { public void run() {
-        sSStatus = nextState.name();
-        tvSStatus.setText(sSStatus); } });
+      if (tvSStatus != null) {
+        tvSStatus.post(new Runnable() {
+          
+          public void run() {
+            sSStatus = nextState.name();
+            tvSStatus.setText(sSStatus);
+          }
+        });
+      }
     }
   }
-  
   
 }

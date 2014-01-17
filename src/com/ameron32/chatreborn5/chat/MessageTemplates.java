@@ -1,23 +1,34 @@
 package com.ameron32.chatreborn5.chat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import com.ameron32.chatreborn5.dummy.UserContent.User;
 
 public class MessageTemplates {
   
   static public class UpdateNames {
     
-    public String[] names;
+    private final ArrayList<User> users = new ArrayList<User>();
     
-    @Override
-    public String toString() {
-      final StringBuilder sb = new StringBuilder();
-      for (String s : names) {
-        sb.append(":[" + s + "]");
-      }
-      return sb.toString();
+    public void addUser(User user) {
+      users.add(user);
     }
+    
+    public ArrayList<User> getUsers() {
+      return users;
+    }
+
+    //    @Override
+//    public String toString() {
+//      final StringBuilder sb = new StringBuilder();
+//      for (User s : users) {
+//        sb.append(":[" + s + "]");
+//      }
+//      return sb.toString();
+//    }
   }
   
   static public class NamedBase {

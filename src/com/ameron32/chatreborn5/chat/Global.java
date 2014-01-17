@@ -44,11 +44,11 @@ public class Global {
 	}
 
 	public static class Local {
-		public static String username = "user"
+		public static String username = "User"
 				+ (new java.util.Random().nextInt(90) + 10);
 		public static String hostname = "localhost";
 
-		public static String[] groupUsers = { "" };
+//		public static String[] groupUsers = { "" };
 		
 //		private static final TreeMap<Long, MessageClass> clientChatHistory = new TreeMap<Long, MessageClass>();
 
