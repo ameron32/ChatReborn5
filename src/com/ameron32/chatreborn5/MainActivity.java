@@ -79,14 +79,11 @@ public class MainActivity extends FragmentActivity implements ScreenListFragment
     if (savedInstanceState == null) {
       ChatService.addWatcher(sendBar);
       
-<<<<<<< HEAD
       FilteredChatHistory standardFilteredChatHistory = new FilteredChatHistory("standard");
       standardFilteredChatHistory.setFilters( MessageTag.ServerChatter, 
                                               MessageTag.HasStartedTypingMessage, 
                                               MessageTag.HasStoppedTypingMessage );
-=======
-      Global.Local.clientChatHistory.setFilters(MessageTag.ServerChatter, MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage);
->>>>>>> 726e78322f4333d33bddc8330418af7953dfeae6
+      Global.Local.clientChatHistory.getFilteredChatHistory("standard").setFilters(MessageTag.ServerChatter, MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage);
       
       Global.set(MainActivity.this);
     }

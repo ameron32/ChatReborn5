@@ -64,7 +64,7 @@ public class ClientFragment extends CoreFragment implements ChatConnectionWatche
   }
 
   private void init() {
-    chatAdapter = new ChatAdapter(getActivity(), Global.Local.getFilteredClientChatHistory());
+    chatAdapter = new ChatAdapter(getActivity());
     slvChatHistory.setAdapter(chatAdapter);
     ServicesOrganizer.chatClient.addChatClientListener(new ChatListener() {
 
