@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ameron32.chatreborn5.R;
+import com.ameron32.chatreborn5.chat.Global;
 import com.ameron32.chatreborn5.chat.MessageTemplates;
 import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
@@ -27,13 +28,12 @@ public class ChatAdapter extends BaseAdapter {
   private ViewHolder             holder;
   private final LayoutInflater   inflater;
   
-  private Map<Long, MessageBase> mData;
+  private Map<Long, MessageBase> mData = Global.Local.clientChatHistory.getFilteredChatHistory("standard").getFilteredHistory();
   
-  public ChatAdapter(Context context, Map<Long, MessageBase> data) {
+  public ChatAdapter(Context context) {
     super();
     inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     this.context = context;
-    mData = data;
   }
   
   public int getCount() {

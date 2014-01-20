@@ -99,8 +99,13 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     
     tvDebug = (TextView) findViewById(R.id.tvDebug);
     
+<<<<<<< HEAD
+//    umAdapter = new UnreadMessageAdapter(context);
+//    twlvUnreads.setAdapter(umAdapter);
+=======
     umAdapter = new UnreadMessageAdapter(context);
     twlvUnreads.setAdapter(umAdapter);
+>>>>>>> 726e78322f4333d33bddc8330418af7953dfeae6
     
     setHint("Message");
     setButtonClearListener();
@@ -130,6 +135,12 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     // voice.setVisibility(VISIBLE);
     // btn_clear.setVisibility(INVISIBLE);
     
+<<<<<<< HEAD
+    umAdapter = new UnreadMessageAdapter(context);
+    twlvUnreads.setAdapter(umAdapter);
+    
+=======
+>>>>>>> 726e78322f4333d33bddc8330418af7953dfeae6
     if (etMessage.getText().length() > 0) {
       onTextIsFull();
     }

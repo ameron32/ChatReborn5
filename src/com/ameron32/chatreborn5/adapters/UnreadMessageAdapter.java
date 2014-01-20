@@ -19,7 +19,7 @@ import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
 public class UnreadMessageAdapter extends BaseAdapter {
   
   // TODO replace with a collection of real data
-  private static final Map<Long, MessageBase> DATA = Global.Local.getFilteredClientChatHistory();
+  private final Map<Long, MessageBase> DATA;
   
   private LayoutInflater                      mInflater;
   private Context                             context;
@@ -28,6 +28,7 @@ public class UnreadMessageAdapter extends BaseAdapter {
     // Cache the LayoutInflate to avoid asking for a new one each time.
     mInflater = LayoutInflater.from(context);
     this.context = context;
+    DATA = Global.Local.clientChatHistory.getFilteredChatHistory("standard").getFilteredHistory();
   }
   
   /**

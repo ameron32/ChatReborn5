@@ -1,30 +1,34 @@
 package com.ameron32.chatreborn5.chat;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import android.util.Log;
 
-import com.ameron32.chatreborn5.chat.MessageTemplates.*;
+import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
 
 public class ChatHistory {
+  private static final List<FilteredChatHistory> filteredHistoryStack = new ArrayList<FilteredChatHistory>();
+  public ChatHistory register(final FilteredChatHistory filteredChatHistory) { 
+    filteredHistoryStack.add(filteredChatHistory);
+    return this;
+  }
 
 	private final TreeMap<Long, MessageBase> completeHistoryCore = new TreeMap<Long, MessageBase>();
-	private final TreeMap<Long, MessageBase> filteredHistoryCore = new TreeMap<Long, MessageBase>();
-	private final TreeMap<Long, MessageBase> unreadFilteredHistoryCore = new TreeMap<Long, MessageBase>();
+//	private final TreeMap<Long, MessageBase> filteredHistoryCore = new TreeMap<Long, MessageBase>();
+//	private final TreeMap<Long, MessageBase> unreadFilteredHistoryCore = new TreeMap<Long, MessageBase>();
 	
 	private final Map<Long, MessageBase> completeHistory;
-	private final Map<Long, MessageBase> filteredHistory;
-	private final Map<Long, MessageBase> unreadFilteredHistory;
+//	private final Map<Long, MessageBase> filteredHistory;
+//	private final Map<Long, MessageBase> unreadFilteredHistory;
 	
 	public ChatHistory() {
 		completeHistory = Collections.synchronizedMap(completeHistoryCore);
-		filteredHistory = Collections.synchronizedMap(filteredHistoryCore);
-		unreadFilteredHistory = Collections.synchronizedMap(unreadFilteredHistoryCore);
+//		filteredHistory = Collections.synchronizedMap(filteredHistoryCore);
+//		unreadFilteredHistory = Collections.synchronizedMap(unreadFilteredHistoryCore);
 		// filterTags.add(MessageTag.ServerChatter);
 	}
 	
@@ -33,9 +37,9 @@ public class ChatHistory {
 	 * @param mc
 	 */
 	public void addToHistory(MessageBase mc) {
-		Log.d("ChatHistory", mc.toString());//
-		completeHistory.put(mc.getTimeStamp(), mc);
-		addToFilteredHistory(mc);
+		Log.d("ChatHistory", mc.toString());
+    completeHistory.put(mc.getTimeStamp(), mc);
+    addToFilteredHistory(mc);
 	}
 	
 	public void addToHistory(TreeMap<Long, MessageBase> additions) {
@@ -51,56 +55,69 @@ public class ChatHistory {
 	
 	public void clearChatHistory() {
 		completeHistory.clear();
-		filteredHistory.clear();
-		unreadFilteredHistory.clear();
+		clearFilteredHistoryStack();
 	}
 	
 	
+	private void addToFilteredHistory(MessageBase messageClass) {
+	  for(FilteredChatHistory fch : filteredHistoryStack) { fch.addToFilteredHistory(messageClass); }
+	}
 	
+	private void clearFilteredHistoryStack() {
+	  for(FilteredChatHistory fch : filteredHistoryStack) { fch.clear(); }
+	}
 	
 	
 	// FILTER METHODS
-	private TreeSet<MessageTag> filterTags = new TreeSet<MessageTag>();
-	
-	private boolean addToFilteredHistory(MessageBase mc) {
-		if (mc.hasAnyOfTags(filterTags.toArray(new MessageTag[0]))) {
-			return false;
-		}
-		filteredHistory.put(mc.getTimeStamp(), mc);
-		return true;
-	}
-	
-	private void addToFilteredHistory(Map<Long, MessageBase> additions) {
-		for (Long key : additions.keySet()) {
-			addToFilteredHistory(additions.get(key));
-		}
-	}
-	
-	public void setFilters(MessageTag...tags) {
-		filterTags.clear();
-		filterTags.addAll(Arrays.asList(tags));
-		resetFilteredChatHistory();
-		// need to notifyDataSetChanged
-	}
-	
-	private void resetFilteredChatHistory() {
-		filteredHistory.clear();
-		
-		addToFilteredHistory(completeHistory);
-	}
-	
-	// tmp
-	public Set<MessageTag> getFilters() {
-	  return filterTags;
-	}
-
-	
-	// GETTERS / SETTERS
+//	private TreeSet<MessageTag> filterTags = new TreeSet<MessageTag>();
+//	
+//	private boolean addToFilteredHistory(MessageBase mc) {
+//		if (mc.hasAnyOfTags(filterTags.toArray(new MessageTag[0]))) {
+//			return false;
+//		}
+//		filteredHistory.put(mc.getTimeStamp(), mc);
+//		return true;
+//	}
+//	
+//	private void addToFilteredHistory(Map<Long, MessageBase> additions) {
+//		for (Long key : additions.keySet()) {
+//			addToFilteredHistory(additions.get(key));
+//		}
+//	}
+//	
+//	public void setFilters(MessageTag...tags) {
+//		filterTags.clear();
+//		filterTags.addAll(Arrays.asList(tags));
+//		resetFilteredChatHistory();
+//		// need to notifyDataSetChanged
+//	}
+//	
+//	private void resetFilteredChatHistory() {
+//		filteredHistory.clear();
+//		
+//		addToFilteredHistory(completeHistory);
+//	}
+//	
+//	// tmp
+//	public Set<MessageTag> getFilters() {
+//	  return filterTags;
+//	}
+//
+//	
+//	// GETTERS / SETTERS
 	public Map<Long, MessageBase> getCompleteHistory() {
 		return completeHistory;
 	}
-
-	public Map<Long, MessageBase> getFilteredHistory() {
-		return filteredHistory;
+//
+//	public Map<Long, MessageBase> getFilteredHistory() {
+//		return filteredHistory;
+//	}
+	
+	
+	
+	public FilteredChatHistory getFilteredChatHistory(String name) {
+	  for (FilteredChatHistory fch : filteredHistoryStack) { if(fch.name.equals(name)) return fch; }
+	  return null;
 	}
+	
 }

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.ameron32.chatreborn5.chat.FilteredChatHistory;
 import com.ameron32.chatreborn5.chat.Global;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
 import com.ameron32.chatreborn5.interfaces.OnFragmentInteractionListener;
@@ -78,13 +79,20 @@ public class MainActivity extends FragmentActivity implements ScreenListFragment
     if (savedInstanceState == null) {
       ChatService.addWatcher(sendBar);
       
+<<<<<<< HEAD
+      FilteredChatHistory standardFilteredChatHistory = new FilteredChatHistory("standard");
+      standardFilteredChatHistory.setFilters( MessageTag.ServerChatter, 
+                                              MessageTag.HasStartedTypingMessage, 
+                                              MessageTag.HasStoppedTypingMessage );
+=======
       Global.Local.clientChatHistory.setFilters(MessageTag.ServerChatter, MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage);
+>>>>>>> 726e78322f4333d33bddc8330418af7953dfeae6
       
       Global.set(MainActivity.this);
     }
   }
   
-  Intent iServer, iClient;
+  private Intent iServer, iClient;
   
   @Override
   protected void onDestroy() {

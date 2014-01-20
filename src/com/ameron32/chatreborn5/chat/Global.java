@@ -52,8 +52,8 @@ public class Global {
 		
 //		private static final TreeMap<Long, MessageClass> clientChatHistory = new TreeMap<Long, MessageClass>();
 
-		public static Map<Long, MessageBase> getFilteredClientChatHistory() {
-			return clientChatHistory.getFilteredHistory();
+		public static Map<Long, MessageBase> getFilteredClientChatHistory(String name) {
+		  return clientChatHistory.getFilteredChatHistory(name).getFilteredHistory();
 		}
 
 //		private static final TreeMap<Long, MessageClass> clientChatHistoryFiltered = new TreeMap<Long, MessageClass>();
