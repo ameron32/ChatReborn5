@@ -76,14 +76,19 @@ public class MainActivity extends FragmentActivity implements ScreenListFragment
     }
     
     SendBar sendBar = ((SendBar) findViewById(R.id.vSendBar));
+    ChatService.addWatcher(sendBar);
     if (savedInstanceState == null) {
-      ChatService.addWatcher(sendBar);
       
       FilteredChatHistory standardFilteredChatHistory = new FilteredChatHistory("standard");
-      standardFilteredChatHistory.setFilters( MessageTag.ServerChatter, 
-                                              MessageTag.HasStartedTypingMessage, 
-                                              MessageTag.HasStoppedTypingMessage );
-      Global.Local.clientChatHistory.getFilteredChatHistory("standard").setFilters(MessageTag.ServerChatter, MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage);
+//      standardFilteredChatHistory.setExcludeFilters( MessageTag.ServerChatter, 
+//                                              MessageTag.HasStartedTypingMessage, 
+//                                              MessageTag.HasStoppedTypingMessage );
+      FilteredChatHistory unread = new FilteredChatHistory("unread");
+//      unread.setIncludeFilters( MessageTag.MessageViewed );
+      unread.setExcludeFilters( MessageTag.ServerChatter, 
+                         MessageTag.HasStartedTypingMessage, 
+                         MessageTag.HasStoppedTypingMessage,
+                         MessageTag.MessageViewed );
       
       Global.set(MainActivity.this);
     }

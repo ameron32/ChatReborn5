@@ -7,6 +7,7 @@ import java.util.List;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.ameron32.chatreborn5.chat.ChatHistory;
 import com.ameron32.chatreborn5.chat.ChatListener;
 import com.ameron32.chatreborn5.chat.Global;
 import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
@@ -64,7 +65,7 @@ public class ChatClient extends ChatService {
       Global.Local.addToHistory(systemMessage);
       
       // send notification UNLESS message is filtered
-      if (!systemMessage.hasAnyOfTags(Global.Local.clientChatHistory.getFilteredChatHistory("standard").getFilters().toArray(new MessageTag[0])))
+      if (!ChatHistory.getPrimaryFilteredChatHistory().wouldMessageBeFiltered(systemMessage))
         notifyMessage(systemMessage.name + "[" + systemMessage.getText() + "]");
       
     }
@@ -90,12 +91,16 @@ public class ChatClient extends ChatService {
   };
   
   public void disconnect() {
-    if (getState() == ChatConnectionState.ONLINE) {
-      changeState(ChatConnectionState.DISCONNECTING);
-      client.stop();
-      changeState(ChatConnectionState.DISABLING);
-      client.close();
-      client = null;
+    if (getState() != ChatConnectionState.OFFLINE) {
+      if (getState() == ChatConnectionState.ONLINE) {
+        changeState(ChatConnectionState.DISCONNECTING);
+        client.stop();
+      }
+      if (getState() == ChatConnectionState.DISCONNECTING) {
+        changeState(ChatConnectionState.DISABLING);
+        client.close();
+        client = null;
+      }
       changeState(ChatConnectionState.OFFLINE);
     }
   }

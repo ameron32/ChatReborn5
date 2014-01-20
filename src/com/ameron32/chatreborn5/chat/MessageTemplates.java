@@ -2,6 +2,7 @@ package com.ameron32.chatreborn5.chat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -123,6 +124,11 @@ public class MessageTemplates {
           if (searchTag == hasTag) return true;
         }
       }
+      return false;
+    }
+    
+    public boolean hasAnyOfTags(Set<MessageTag> tags) {
+      for (MessageTag tag : tags) { if (hasAnyOfTags(tag)) return true; }
       return false;
     }
     

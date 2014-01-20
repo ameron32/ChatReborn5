@@ -28,7 +28,7 @@ public class UnreadMessageAdapter extends BaseAdapter {
     // Cache the LayoutInflate to avoid asking for a new one each time.
     mInflater = LayoutInflater.from(context);
     this.context = context;
-    DATA = Global.Local.clientChatHistory.getFilteredChatHistory("standard").getFilteredHistory();
+    DATA = Global.Local.clientChatHistory.getFilteredChatHistory("unread").getFilteredHistory();
   }
   
   /**

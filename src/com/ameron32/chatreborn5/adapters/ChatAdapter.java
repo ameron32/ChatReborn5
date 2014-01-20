@@ -6,42 +6,47 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ameron32.chatreborn5.R;
 import com.ameron32.chatreborn5.chat.Global;
-import com.ameron32.chatreborn5.chat.MessageTemplates;
 import com.ameron32.chatreborn5.chat.MessageTemplates.ChatMessage;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
+import com.ameron32.chatreborn5.chat.MessageTemplates.MessageTag;
 import com.ameron32.chatreborn5.chat.MessageTemplates.SystemMessage;
 import com.ameron32.chatreborn5.notifications.NewMessageBar;
 
-public class ChatAdapter extends BaseAdapter {
+public class ChatAdapter extends BaseAdapter implements Filterable {
   
   private final Context          context;
   private ViewHolder             holder;
   private final LayoutInflater   inflater;
   
   private Map<Long, MessageBase> mData = Global.Local.clientChatHistory.getFilteredChatHistory("standard").getFilteredHistory();
+  private Map<Long, MessageBase> mFData = new TreeMap<Long, MessageBase>();
   
   public ChatAdapter(Context context) {
     super();
     inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     this.context = context;
+    mFData.putAll(mData);
   }
   
   public int getCount() {
-    return mData.size();
+    return mFData.size();
   }
   
   public MessageBase getItem(int position) {
-    return mData.get(getKeyAt(position));
+    return mFData.get(getKeyAt(position));
   }
   
   public long getItemId(int arg0) {
@@ -50,7 +55,7 @@ public class ChatAdapter extends BaseAdapter {
   
   private long getKeyAt(int position) {
     int counter = 0;
-    for (Map.Entry<Long, MessageBase> entry : mData.entrySet()) {
+    for (Map.Entry<Long, MessageBase> entry : mFData.entrySet()) {
       if (position == counter) return entry.getKey();
       counter++;
     }
@@ -61,6 +66,8 @@ public class ChatAdapter extends BaseAdapter {
   @Override
   public View getView(final int position, View convertView, final ViewGroup parent) {
     item = getItem(position);
+//    item.attachTags(MessageTag.MessageViewed);
+    
     if (item instanceof SystemMessage) {
       convertView = inflater.inflate(R.layout.chat_sysmsg_ui, parent, false);
       holder = new ViewHolder();
@@ -174,5 +181,69 @@ public class ChatAdapter extends BaseAdapter {
   public void remove(int position) {
     mData.remove(getKeyAt(position));
   }
+
+  @Override
+  public Filter getFilter() {
+    mFData.putAll(mData);
+    return myFilter;
+  }
   
+  MessageTag testFilter = MessageTag.HasStartedTypingMessage;
+
+  Filter myFilter = new Filter() {
+                    
+    @Override
+    protected FilterResults performFiltering(final CharSequence constraint) {
+      FilterResults filterResults = new FilterResults();
+      filterResults.values = new TreeMap<Long, MessageBase>();
+//      Map<Long, MessageBase> tempList = mData;
+      // constraint is the result from text you want to filter
+      // against.
+      // objects is your data set you will filter from
+      if (constraint != null && mData != null) {
+        int i = 0;
+
+        for (Map.Entry<Long, MessageBase> entry : mFData.entrySet()) {
+          MessageBase item = entry.getValue();
+//          Log.d("ChatAdapter", "key=" + getKeyAt(i) + "i=" + i);
+          
+
+          boolean fail = false;
+          // do whatever you wanna do here
+          // adding result set output array
+          i++;
+//          Log.d("ChatAdapter", "constraint.length()=" + constraint.length() + " item=" + item);
+          if (constraint.length() > 0 && !item.getText().contains(constraint)) {
+            Log.d("ChatAdapter", "exclude " + item.getText() + " with constraint " + constraint.length());
+            fail = true;
+          }
+          if (item.hasAnyOfTags(testFilter)) {
+            Log.d("ChatAdapter", "exclude " + item.getText() + " with Filter");
+            fail = true;
+          }
+
+          if (!fail) ((Map<Long, MessageBase>) filterResults.values).put(item.getTimeStamp(), item);
+        }
+
+        // following two lines is very important
+        // as publish result can only take FilterResults objects
+//        filterResults.values = mFData;
+        filterResults.count = ((Map<Long, MessageBase>) filterResults.values).size();
+      }
+      return filterResults;
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void publishResults(final CharSequence contraint, final FilterResults results) {
+      mFData.clear();
+      if (results.values != null) mFData.putAll((Map<Long, MessageBase>) results.values);
+      if (results.count > 0) {
+        notifyDataSetChanged();
+      }
+      else {
+        notifyDataSetInvalidated();
+      }
+    }
+  };
 }

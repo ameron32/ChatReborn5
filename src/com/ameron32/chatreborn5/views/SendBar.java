@@ -100,9 +100,6 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
     tvDebug = (TextView) findViewById(R.id.tvDebug);
     
 
-//    umAdapter = new UnreadMessageAdapter(context);
-//    twlvUnreads.setAdapter(umAdapter);
-
     setHint("Message");
     setButtonClearListener();
     setVoiceListener();
@@ -127,13 +124,10 @@ public class SendBar extends RelativeLayout implements ChatConnectionWatcher {
   }
   
   private void showMe() {
-    // ibSend.setVisibility(INVISIBLE);
-    // voice.setVisibility(VISIBLE);
-    // btn_clear.setVisibility(INVISIBLE);
-    
-
-    umAdapter = new UnreadMessageAdapter(context);
-    twlvUnreads.setAdapter(umAdapter);
+    if (umAdapter == null) {
+      umAdapter = new UnreadMessageAdapter(context);
+      twlvUnreads.setAdapter(umAdapter);
+    }
     
     if (etMessage.getText().length() > 0) {
       onTextIsFull();

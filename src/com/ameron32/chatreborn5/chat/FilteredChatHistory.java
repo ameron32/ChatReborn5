@@ -1,5 +1,6 @@
 package com.ameron32.chatreborn5.chat;
 
+import java.io.FilterInputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -30,10 +31,11 @@ public class FilteredChatHistory {
   
   
 //FILTER METHODS
- private TreeSet<MessageTag> filterTags = new TreeSet<MessageTag>();
+ private TreeSet<MessageTag> filterExcludeTags = new TreeSet<MessageTag>();
+ private TreeSet<MessageTag> filterIncludeOnlyTags = new TreeSet<MessageTag>();
  
  public boolean addToFilteredHistory(MessageBase mc) {
-   if (mc.hasAnyOfTags(filterTags.toArray(new MessageTag[0]))) { return false; }
+   if (wouldMessageBeFiltered(mc)) { return false; }
    filteredHistory.put(mc.getTimeStamp(), mc);
    return true;
  }
@@ -42,9 +44,9 @@ public class FilteredChatHistory {
    for (Long key : additions.keySet()) { addToFilteredHistory(additions.get(key)); }
  }
  
- public void setFilters(MessageTag...tags) {
-   filterTags.clear();
-   filterTags.addAll(Arrays.asList(tags));
+ public void setExcludeFilters(MessageTag...tags) {
+   getFilterExcludeTags().clear();
+   getFilterExcludeTags().addAll(Arrays.asList(tags));
    resetFilteredChatHistory();
  }
  
@@ -58,9 +60,9 @@ public class FilteredChatHistory {
  }
  
  // tmp
- public Set<MessageTag> getFilters() {
-   return filterTags;
- }
+// public Set<MessageTag> getFilters() {
+//   return filterExcludeTags;
+// }
 
  
  // GETTERS / SETTERS
@@ -68,4 +70,30 @@ public class FilteredChatHistory {
  public Map<Long, MessageBase> getFilteredHistory() {
    return filteredHistory;
  }
+ 
+ 
+ 
+ public boolean wouldMessageBeFiltered(final MessageBase message) {
+   if (!filterIncludeOnlyTags.isEmpty() 
+       && !message.hasAnyOfTags(filterIncludeOnlyTags)) return true;
+   if (!filterExcludeTags.isEmpty()
+       && message.hasAnyOfTags(filterExcludeTags)) return true;
+   return false;
+ }
+
+private TreeSet<MessageTag> getFilterExcludeTags() {
+  return filterExcludeTags;
+}
+
+private void setFilterExcludeTags(TreeSet<MessageTag> filterExcludeTags) {
+  this.filterExcludeTags = filterExcludeTags;
+}
+
+private TreeSet<MessageTag> getFilterIncludeOnlyTags() {
+  return filterIncludeOnlyTags;
+}
+
+private void setFilterIncludeOnlyTags(TreeSet<MessageTag> filterIncludeOnlyTags) {
+  this.filterIncludeOnlyTags = filterIncludeOnlyTags;
+}
 }

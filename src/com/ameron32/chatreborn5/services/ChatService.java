@@ -45,7 +45,7 @@ public abstract class ChatService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 	  Log.d("ChatService", "onStartCommand");
 		startNotification(getSTART_NOTIFICATION_ID());
-		return START_STICKY;
+		return START_NOT_STICKY;
 	}
 
 	@Override

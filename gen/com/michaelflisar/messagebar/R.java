@@ -19,10 +19,10 @@ public final class R {
 		public static final int mb__messagebar_divider_horizontal = 0x7f020016;
 	}
 	public static final class id {
-		public static final int mbButton1 = 0x7f05002a;
-		public static final int mbButton2 = 0x7f05002b;
-		public static final int mbContainer = 0x7f050028;
-		public static final int mbMessage = 0x7f050029;
+		public static final int mbButton1 = 0x7f05002c;
+		public static final int mbButton2 = 0x7f05002d;
+		public static final int mbContainer = 0x7f05002a;
+		public static final int mbMessage = 0x7f05002b;
 	}
 	public static final class layout {
 		public static final int messagebar_frame_layout = 0x7f03000b;

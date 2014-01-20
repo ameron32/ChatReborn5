@@ -191,7 +191,8 @@ public class ChatServer extends ChatService {
   }
   
   public void startServer() {
-    if (getState() == ChatConnectionState.OFFLINE) {
+    if (getState() != ChatConnectionState.ONLINE) {
+      if (getState() == ChatConnectionState.OFFLINE) {
       changeState(ChatConnectionState.PREPARING);
       
       register();
@@ -208,29 +209,34 @@ public class ChatServer extends ChatService {
       getServer().addListener(serverListener);
       
       changeState(ChatConnectionState.PREPARED);
+      }
       
-      // restore chat log somehow
-      
-      new SimpleAsyncTask() {
+      if (getState() == ChatConnectionState.PREPARED) {
+        // restore chat log somehow
         
-        @Override
-        protected void doInBackground() {
-          try {
-            Log.error("SERVER STARTING");
-            server.bind(Network.port);
-            server.start();
-            changeState(ChatConnectionState.ONLINE);
+        new SimpleAsyncTask() {
+          
+          boolean successful = false;
+          
+          @Override
+          protected void doInBackground() {
+            try {
+              Log.error("SERVER STARTING");
+              server.bind(Network.port);
+              server.start();
+              successful = true;
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
           }
-          catch (IOException e) {
-            e.printStackTrace();
+          
+          @Override
+          protected void onPostExecute() {
+            if (successful) changeState(ChatConnectionState.ONLINE);
           }
-        }
-        
-        @Override
-        protected void onPostExecute() {
-          // all UIs should be notified that now connected
-        }
-      }.execute();
+        }.execute();
+      }
     }
   }
   

@@ -1,8 +1,7 @@
 package com.ameron32.chatreborn5.chat;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -11,9 +10,9 @@ import android.util.Log;
 import com.ameron32.chatreborn5.chat.MessageTemplates.MessageBase;
 
 public class ChatHistory {
-  private static final List<FilteredChatHistory> filteredHistoryStack = new ArrayList<FilteredChatHistory>();
+  private static final Map<String, FilteredChatHistory> filteredHistoryStack = new HashMap<String, FilteredChatHistory>();
   public ChatHistory register(final FilteredChatHistory filteredChatHistory) { 
-    filteredHistoryStack.add(filteredChatHistory);
+    filteredHistoryStack.put(filteredChatHistory.name, filteredChatHistory);
     return this;
   }
 
@@ -60,11 +59,11 @@ public class ChatHistory {
 	
 	
 	private void addToFilteredHistory(MessageBase messageClass) {
-	  for(FilteredChatHistory fch : filteredHistoryStack) { fch.addToFilteredHistory(messageClass); }
+	  for(Map.Entry<String, FilteredChatHistory> fch : filteredHistoryStack.entrySet()) { fch.getValue().addToFilteredHistory(messageClass); }
 	}
 	
 	private void clearFilteredHistoryStack() {
-	  for(FilteredChatHistory fch : filteredHistoryStack) { fch.clear(); }
+	  for(Map.Entry<String, FilteredChatHistory> fch : filteredHistoryStack.entrySet()) { fch.getValue().clear(); }
 	}
 	
 	
@@ -116,8 +115,14 @@ public class ChatHistory {
 	
 	
 	public FilteredChatHistory getFilteredChatHistory(String name) {
-	  for (FilteredChatHistory fch : filteredHistoryStack) { if(fch.name.equals(name)) return fch; }
+	  for (Map.Entry<String, FilteredChatHistory> fch : filteredHistoryStack.entrySet()) { 
+	    if(fch.getValue().name.equals(name)) return fch.getValue(); 
+	  }
 	  return null;
+	}
+	
+	public static FilteredChatHistory getPrimaryFilteredChatHistory() {
+	  return filteredHistoryStack.get("standard");
 	}
 	
 }
