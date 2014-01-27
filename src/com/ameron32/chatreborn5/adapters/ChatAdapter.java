@@ -31,7 +31,7 @@ public class ChatAdapter extends BaseAdapter implements Filterable {
   private ViewHolder             holder;
   private final LayoutInflater   inflater;
   
-  private Map<Long, MessageBase> mData = Global.Local.clientChatHistory.getFilteredChatHistory("standard").getFilteredHistory();
+  private Map<Long, MessageBase> mData  = Global.Local.clientChatHistory.getFilteredChatHistory("standard").getFilteredHistory();
   private Map<Long, MessageBase> mFData = new TreeMap<Long, MessageBase>();
   
   public ChatAdapter(Context context) {
@@ -62,11 +62,12 @@ public class ChatAdapter extends BaseAdapter implements Filterable {
     return -1l;
   }
   
-  MessageBase item;
+  private MessageBase item;
+  
   @Override
   public View getView(final int position, View convertView, final ViewGroup parent) {
     item = getItem(position);
-//    item.attachTags(MessageTag.MessageViewed);
+    // item.attachTags(MessageTag.MessageViewed);
     
     if (item instanceof SystemMessage) {
       convertView = inflater.inflate(R.layout.chat_sysmsg_ui, parent, false);
@@ -181,53 +182,49 @@ public class ChatAdapter extends BaseAdapter implements Filterable {
   public void remove(int position) {
     mData.remove(getKeyAt(position));
   }
-
+  
   @Override
   public Filter getFilter() {
     mFData.putAll(mData);
     return myFilter;
   }
   
-  MessageTag testFilter = MessageTag.HasStartedTypingMessage;
-
-  Filter myFilter = new Filter() {
-                    
+  private MessageTag[] testFilter = { MessageTag.HasStartedTypingMessage, MessageTag.HasStoppedTypingMessage };
+  
+  private Filter     myFilter   = new Filter() {
+                                  
     @Override
     protected FilterResults performFiltering(final CharSequence constraint) {
       FilterResults filterResults = new FilterResults();
       filterResults.values = new TreeMap<Long, MessageBase>();
-//      Map<Long, MessageBase> tempList = mData;
-      // constraint is the result from text you want to filter
-      // against.
-      // objects is your data set you will filter from
+      // constraint is the result from text you
+      // want to filter against. objects is your
+      // data set you will filter from
       if (constraint != null && mData != null) {
-        int i = 0;
-
         for (Map.Entry<Long, MessageBase> entry : mFData.entrySet()) {
           MessageBase item = entry.getValue();
-//          Log.d("ChatAdapter", "key=" + getKeyAt(i) + "i=" + i);
           
-
           boolean fail = false;
           // do whatever you wanna do here
           // adding result set output array
-          i++;
-//          Log.d("ChatAdapter", "constraint.length()=" + constraint.length() + " item=" + item);
           if (constraint.length() > 0 && !item.getText().contains(constraint)) {
-            Log.d("ChatAdapter", "exclude " + item.getText() + " with constraint " + constraint.length());
+            Log.d("ChatAdapter", "exclude " + item.getText() + " with constraint "
+                + constraint.length());
             fail = true;
           }
           if (item.hasAnyOfTags(testFilter)) {
             Log.d("ChatAdapter", "exclude " + item.getText() + " with Filter");
             fail = true;
           }
-
-          if (!fail) ((Map<Long, MessageBase>) filterResults.values).put(item.getTimeStamp(), item);
+          
+          // if it didn't fail, add it to the results
+          if (!fail)
+            ((Map<Long, MessageBase>) filterResults.values).put(item.getTimeStamp(), item);
         }
-
+        
         // following two lines is very important
-        // as publish result can only take FilterResults objects
-//        filterResults.values = mFData;
+        // as publish result can only take
+        // FilterResults objects
         filterResults.count = ((Map<Long, MessageBase>) filterResults.values).size();
       }
       return filterResults;
@@ -235,7 +232,8 @@ public class ChatAdapter extends BaseAdapter implements Filterable {
     
     @SuppressWarnings("unchecked")
     @Override
-    protected void publishResults(final CharSequence contraint, final FilterResults results) {
+    protected void publishResults(final CharSequence contraint,
+        final FilterResults results) {
       mFData.clear();
       if (results.values != null) mFData.putAll((Map<Long, MessageBase>) results.values);
       if (results.count > 0) {

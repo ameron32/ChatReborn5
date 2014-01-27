@@ -22,6 +22,26 @@
         swipe:swipeMode="left"
         swipe:swipeOpenOnLongPress="true" />
 
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/bSearch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/bSearch"
+        android:background="#88FFFFFF"
+        android:hint="Query" />
+
+    <ImageButton
+        android:id="@+id/bSearch"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_launcher" />
+
     <TextView
         android:id="@+id/tvIsTyping"
         android:layout_width="match_parent"

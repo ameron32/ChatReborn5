@@ -128,11 +128,6 @@ public class ClientFragment extends CoreFragment implements ChatConnectionWatche
       }
     });
     
-    if (etSearch != null) {
-      String query = etSearch.getText().toString().trim();
-      chatAdapter.getFilter().filter(query);
-    }
-    
     if (bSearch != null) {
       bSearch.setOnClickListener(new View.OnClickListener() {
         
@@ -171,6 +166,11 @@ public class ClientFragment extends CoreFragment implements ChatConnectionWatche
           public void run() {
             chatAdapter.clear();
             chatAdapter.notifyDataSetChanged();
+            
+            // set filter from EditText
+            String query = etSearch.getText().toString().trim();
+            if (query == null) query = "";
+            chatAdapter.getFilter().filter(query);
           }
         });
       }
